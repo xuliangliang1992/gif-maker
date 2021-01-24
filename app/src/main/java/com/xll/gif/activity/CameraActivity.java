@@ -54,7 +54,6 @@ public class CameraActivity extends BaseActivity {
     private CompositeDisposable mCompositeDisposable;
     File file;
     int currentIndex;
-    int videoCount;
     long seconds;
     private boolean isImage;
 
@@ -112,10 +111,12 @@ public class CameraActivity extends BaseActivity {
         mCompositeDisposable.add(RxView.clicks(mBinding.btnLight)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe(o -> {
-                    if (mBinding.camera.getFlash() == FlashMode.ON) {
-                        mBinding.camera.setFlash(FlashMode.OFF);
+                    if (mBinding.camera.isTorchOn()) {
                         mBinding.btnLight.setImageResource(R.drawable.light_off);
-                    } else if (mBinding.camera.getFlash() == FlashMode.OFF) {
+                        mBinding.camera.enableTorch(false);
+                        mBinding.camera.setFlash(FlashMode.OFF);
+                    } else {
+                        mBinding.camera.enableTorch(true);
                         mBinding.camera.setFlash(FlashMode.ON);
                         mBinding.btnLight.setImageResource(R.drawable.light_on);
                     }
@@ -331,4 +332,6 @@ public class CameraActivity extends BaseActivity {
         }
         return "video/mp4";
     }
+
+
 }

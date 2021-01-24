@@ -92,7 +92,6 @@ public class MyRelativeLayout extends RelativeLayout {
     //记录当前设备的缩放倍数
     private double scaleTimes = 1;
 
-
     public MyRelativeTouchCallBack getMyRelativeTouchCallBack() {
         return myRelativeTouchCallBack;
     }
@@ -100,7 +99,6 @@ public class MyRelativeLayout extends RelativeLayout {
     public void setMyRelativeTouchCallBack(MyRelativeTouchCallBack myRelativeTouchCallBack) {
         this.myRelativeTouchCallBack = myRelativeTouchCallBack;
     }
-
 
     //接口
     private MyRelativeTouchCallBack myRelativeTouchCallBack;
@@ -120,9 +118,7 @@ public class MyRelativeLayout extends RelativeLayout {
     public MyRelativeLayout(final Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
-
         testScaleTimes();
-
         init();
     }
 
@@ -193,9 +189,9 @@ public class MyRelativeLayout extends RelativeLayout {
                     //当第二个手指落指的时候 开始计算寻找最近的点
                     listDistance.clear();
                     for ( int i = 0; i < listTvParams.size(); i++ ) {
-                        listDistance.add(spacing(getMidPiont(( int ) fX, ( int ) fY, ( int ) sX, ( int ) sY), listTvParams.get(i).getMidPoint()));
+                        listDistance.add(spacing(getMidPoint(( int ) fX, ( int ) fY, ( int ) sX, ( int ) sY), listTvParams.get(i).getMidPoint()));
                     }
-//寻找最近的点
+                    //寻找最近的点
                     if ( list != null && !list.isEmpty() ) {
                         double min = listDistance.get(0);
                         num = 0;
@@ -207,8 +203,8 @@ public class MyRelativeLayout extends RelativeLayout {
                         }
                         textView = null;
                         textView = list.get(num);
-                        tv_widths = getMidPiont(( int ) fX, ( int ) fY, ( int ) sX, ( int ) sY).x - textView.getX();
-                        tv_heights = getMidPiont(( int ) fX, ( int ) fY, ( int ) sX, ( int ) sY).y - textView.getY();
+                        tv_widths = getMidPoint(( int ) fX, ( int ) fY, ( int ) sX, ( int ) sY).x - textView.getX();
+                        tv_heights = getMidPoint(( int ) fX, ( int ) fY, ( int ) sX, ( int ) sY).y - textView.getY();
 
                         oldDist = spacing(event, ptrID1, ptrID2);
                         setTextViewParams(getTextViewParams(textView));
@@ -335,10 +331,8 @@ public class MyRelativeLayout extends RelativeLayout {
                         case MotionEvent.ACTION_DOWN:
                             tvOneFinger = true;
                             isClick = true;
-
                             firstX = event.getX();
                             firstY = event.getY();
-
                             mptrID1 = event.getPointerId(event.getActionIndex());
                             //计算当前textView的位置和大小
                             width = textView.getWidth();
@@ -352,20 +346,15 @@ public class MyRelativeLayout extends RelativeLayout {
                         case MotionEvent.ACTION_POINTER_DOWN:
                             tvOneFinger = false;
                             isClick = false;
-
                             mptrID2 = event.getPointerId(event.getActionIndex());
                             msX = mEvent.getX(event.findPointerIndex(mptrID1));
                             msY = mEvent.getY(event.findPointerIndex(mptrID1));
                             mfX = mEvent.getX(event.findPointerIndex(mptrID2));
                             mfY = mEvent.getY(event.findPointerIndex(mptrID2));
-
                             mflag = false;
-//
-                            mTv_widths = getMidPiont(( int ) mfX, ( int ) mfY, ( int ) msX, ( int ) msY).x - textView.getX();
-                            mTv_heights = getMidPiont(( int ) mfX, ( int ) mfY, ( int ) msX, ( int ) msY).y - textView.getY();
-//
+                            mTv_widths = getMidPoint(( int ) mfX, ( int ) mfY, ( int ) msX, ( int ) msY).x - textView.getX();
+                            mTv_heights = getMidPoint(( int ) mfX, ( int ) mfY, ( int ) msX, ( int ) msY).y - textView.getY();
                             oldDist = spacing(event, mptrID1, mptrID2);
-
                             break;
                         case MotionEvent.ACTION_MOVE:
                             //平移操作
@@ -376,11 +365,9 @@ public class MyRelativeLayout extends RelativeLayout {
                                 if ( myRelativeTouchCallBack != null )
                                     myRelativeTouchCallBack.onTextViewMoving(textView);
                             }
-
                             if ( spacing(firstX, firstY, event.getX(), event.getY()) > 2 ) {
                                 isClick = false;
                             }
-
                             //旋转和缩放操作
                             if ( mptrID1 != INVALID_POINTER_ID && mptrID2 != INVALID_POINTER_ID ) {
                                 float nfX, nfY, nsX, nsY;
@@ -388,17 +375,15 @@ public class MyRelativeLayout extends RelativeLayout {
                                 nsY = mEvent.getY(event.findPointerIndex(mptrID1));
                                 nfX = mEvent.getX(event.findPointerIndex(mptrID2));
                                 nfY = mEvent.getY(event.findPointerIndex(mptrID2));
-
                                 //如果两点中点在该View上,则考虑两个点也可以拖动该View操作
-                                textView.setX(getMidPiont(( int ) nfX, ( int ) nfY, ( int ) nsX, ( int ) nsY).x - mTv_widths);
-                                textView.setY(getMidPiont(( int ) nfX, ( int ) nfY, ( int ) nsX, ( int ) nsY).y - mTv_heights);
+                                textView.setX(getMidPoint(( int ) nfX, ( int ) nfY, ( int ) nsX, ( int ) nsY).x - mTv_widths);
+                                textView.setY(getMidPoint(( int ) nfX, ( int ) nfY, ( int ) nsX, ( int ) nsY).y - mTv_heights);
                                 //处理旋转模块
                                 mAngle = angleBetweenLines(mfX, mfY, msX, msY, nfX, nfY, nsX, nsY);
                                 textView.setRotation(mAngle);
                                 //处理缩放模块
                                 float newDist = spacing(event, mptrID1, mptrID2);
                                 scale = newDist / oldDist;
-
                                 if ( newDist > oldDist + 1 ) {
                                     textView.setTextSize(textSize *= scale);
                                     oldDist = newDist;
@@ -418,11 +403,9 @@ public class MyRelativeLayout extends RelativeLayout {
                                 myRelativeTouchCallBack.onTextViewMovingDone();
                             mptrID1 = INVALID_POINTER_ID;
                             updateTextViewParams(( TextView ) v, mAngle, scale);
-
                             if ( tvOneFinger && isClick ) {
 //                                showDialog(textView.getText().toString(), false);
                             }
-
                             break;
                         case MotionEvent.ACTION_POINTER_UP:
                             mptrID2 = INVALID_POINTER_ID;
@@ -445,7 +428,6 @@ public class MyRelativeLayout extends RelativeLayout {
             textView.setText(content);
             textView.setTextColor(color);
         }
-
     }
 
     /**
@@ -456,12 +438,10 @@ public class MyRelativeLayout extends RelativeLayout {
         ptrID2 = INVALID_POINTER_ID;
         mptrID1 = INVALID_POINTER_ID;
         mptrID2 = INVALID_POINTER_ID;
-
         list = new ArrayList<>();
         listTvParams = new ArrayList<>();
         listDistance = new ArrayList<>();
     }
-
 
     /**
      * 显示自定义对话框
@@ -616,7 +596,7 @@ public class MyRelativeLayout extends RelativeLayout {
      * @param p2
      * @return 返回两个点连线的中点
      */
-    private Point getMidPiont(Point p1, Point p2) {
+    private Point getMidPoint(Point p1, Point p2) {
         return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
     }
 
@@ -629,7 +609,7 @@ public class MyRelativeLayout extends RelativeLayout {
      * @param y2
      * @return
      */
-    private Point getMidPiont(int x1, int y1, int x2, int y2) {
+    private Point getMidPoint(int x1, int y1, int x2, int y2) {
         return new Point((x1 + x2) / 2, (y1 + y2) / 2);
     }
 
@@ -699,7 +679,6 @@ public class MyRelativeLayout extends RelativeLayout {
     private float angleBetweenLines(float fX, float fY, float sX, float sY, float nfX, float nfY, float nsX, float nsY) {
         float angle1 = ( float ) Math.atan2((fY - sY), (fX - sX));
         float angle2 = ( float ) Math.atan2((nfY - nsY), (nfX - nsX));
-
         float angle = (( float ) Math.toDegrees(angle1 - angle2)) % 360;
         if ( angle < -180.f ) angle += 360.0f;
         if ( angle > 180.f ) angle -= 360.0f;
@@ -748,14 +727,13 @@ public class MyRelativeLayout extends RelativeLayout {
     private double spacing(float x1, float y1, float x2, float y2) {
         double x = x1 - x2;
         double y = y1 - y2;
-        return Math.sqrt((x * x + y * y));
+        return Math.sqrt(x * x + y * y);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
-
 
     /**
      * Created by cretin on 15/12/21
