@@ -1,13 +1,16 @@
 package com.xll.gif.fragment;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.Environment;
-import android.util.Log;
+import android.provider.MediaStore;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.highlands.common.BaseConstant;
 import com.highlands.common.base.fragment.BaseFragment;
 import com.highlands.common.schedulers.SchedulerProvider;
@@ -23,12 +26,11 @@ import com.xll.gif.R;
 import com.xll.gif.adapter.GifGhyAdapter;
 import com.xll.gif.databinding.ListFragmentBinding;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -72,7 +74,7 @@ public class GifListFragment extends BaseFragment {
 
         mAdapter.setGalleryClickListener(new GifGhyAdapter.onGalleryClickListener() {
             @Override
-            public void onImageDownload(int position, String url) {
+            public void onImageDownload(int position, String url, GifBean gifBean) {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -80,22 +82,33 @@ public class GifListFragment extends BaseFragment {
 
                     }
                 });
-                //                saveImageToGallery(mActivity, position, id);
                 PermissionUtil.externalStorage(new PermissionUtil.RequestPermission() {
                     @Override
                     public void onRequestPermissionSuccess() {
-                        //                            download(url);
                         new Thread() {
                             @Override
                             public void run() {
                                 super.run();
                                 try {
-                                    String picUrl = "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1555243545061&di=26dfcd1e30fad29adc2fb2ba06a042c3&imgtype=0&src=http%3A%2F%2Fs7.sinaimg.cn%2Forignal%2F0063R5gqzy7maPm9Z4y46%26690";
                                     File file = Glide.with(mActivity).downloadOnly().load(url).submit().get();
-                                    Log.d(TAG, "file: " + file);
-                                    copy(file, FileUtil.createFile(getFileName(url), FileUtil.FILE_TYPE_GIF));
+                                    File target = FileUtil.createFile(mActivity, getFileName(url));
+                                    copy(file, target);
+
+                                    mActivity.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            gifBean.setPath(target.getAbsolutePath());
+                                            list.set(position, gifBean);
+                                            mAdapter.refresh(list);
+                                            SharePreferenceUtil.getInstance().put(mActivity,
+                                                    BaseConstant.SHARED_PREFERENCE_FILE_NAME,
+                                                    SharePreferenceUtil.RESOURCE,
+                                                    mGson.toJson(list)
+                                            );
+                                        }
+                                    });
                                 } catch (ExecutionException | InterruptedException ex) {
-                                    Log.e(TAG, null, ex);
+                                    Timber.tag(TAG).e(ex);
                                 }
                                 hideLoading();
                             }
@@ -121,34 +134,11 @@ public class GifListFragment extends BaseFragment {
                     showToast("this picture is no exist!");
                     updateAdapter(position, "");
                 } else {
-                    ShareUtil.shareImage(mActivity, Uri.parse(path), "Share");
+                    ShareUtil.shareImage(mActivity, getImageContentUri(mActivity, path), "Share");
                 }
             }
 
         });
-    }
-
-    /**
-     * 复制文件
-     *
-     * @param filename 文件名
-     * @param bytes    数据
-     */
-    public void copy(String filename, byte[] bytes) {
-        try {
-            //如果手机已插入sd卡,且app具有读写sd卡的权限
-            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                FileOutputStream output = null;
-                output = new FileOutputStream(filename);
-                output.write(bytes);
-                Log.i(TAG, "copy: success，" + filename);
-                output.close();
-            } else {
-                Log.i(TAG, "copy:fail, " + filename);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -217,83 +207,45 @@ public class GifListFragment extends BaseFragment {
         //        }
         //
         //        mAdapter.refresh(list);
-        new AppRetrofit().getRetrofit().create(FaceIDService.class)
-                .getGifs()
-                .subscribeOn(SchedulerProvider.getInstance().io())
-                .observeOn(SchedulerProvider.getInstance().ui())
-                .subscribe(new Observer<List<GifBean>>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                        mCompositeDisposable.add(d);
-                    }
+        if (!StringUtil.isStringNull(resource)) {
+            list = mGson.fromJson(resource, new TypeToken<List<GifBean>>() {
+            }.getType());
+            mAdapter.refresh(list);
+        } else {
+            new AppRetrofit().getRetrofit().create(FaceIDService.class)
+                    .getGifs()
+                    .subscribeOn(SchedulerProvider.getInstance().io())
+                    .observeOn(SchedulerProvider.getInstance().ui())
+                    .subscribe(new Observer<List<GifBean>>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable d) {
+                            mCompositeDisposable.add(d);
+                        }
 
-                    @Override
-                    public void onNext(@NonNull List<GifBean> gifBeans) {
-                        Timber.tag(TAG).i("gifBeans " + gifBeans.size());
-                        mAdapter.refresh(gifBeans);
-                    }
+                        @Override
+                        public void onNext(@NonNull List<GifBean> gifBeans) {
+                            Timber.tag(TAG).i("gifBeans " + gifBeans.size());
+                            list = gifBeans;
+                            mAdapter.refresh(list);
+                        }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        Timber.tag(TAG).e(e);
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+                            Timber.tag(TAG).e(e);
 
-                    }
+                        }
 
-                    @Override
-                    public void onComplete() {
-                        Timber.tag(TAG).i("onComplete");
-                    }
-                });
-
+                        @Override
+                        public void onComplete() {
+                            Timber.tag(TAG).i("onComplete");
+                        }
+                    });
+        }
     }
 
     @Override
     public void setPresenter() {
 
-    }
-
-    public void saveImageToGallery(Context context, int position, int id) {
-        InputStream inStream = context.getResources().openRawResource(id);
-        // 首先保存图片
-        String fileName = System.currentTimeMillis() + ".gif";
-        File file = FileUtil.createFile(fileName, FileUtil.FILE_TYPE_GIF);
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(file);//存入SDCard
-            byte[] buffer = new byte[1024];
-            ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-            int len = -1;
-            while ((len = inStream.read(buffer)) != -1) {
-                outStream.write(buffer, 0, len);
-            }
-            byte[] bs = outStream.toByteArray();
-            //            Android10SaveFile.saveImage2Public(mActivity,fileName,bs,"");
-            fileOutputStream.write(bs);
-            outStream.close();
-            inStream.close();
-            fileOutputStream.flush();
-            fileOutputStream.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // 其次把文件插入到系统图库
-        //        try {
-        //            MediaStore.Images.Media.insertImage(context.getContentResolver(),
-        //                    file.getAbsolutePath(), fileName, fileName);
-        //        } catch (FileNotFoundException e) {
-        //            e.printStackTrace();
-        //        }
-        //        // 最后通知图库更新
-        //        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse(file.getAbsolutePath())));
-
-        updateAdapter(position, file.getAbsolutePath());
-        mActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                hideLoading();
-            }
-        });
     }
 
     public class GifBean {
@@ -361,7 +313,7 @@ public class GifListFragment extends BaseFragment {
      * @param source 输入文件
      * @param target 输出文件
      */
-    public  void copy(File source, File target) {
+    public void copy(File source, File target) {
         FileInputStream fileInputStream = null;
         FileOutputStream fileOutputStream = null;
         try {
@@ -385,5 +337,41 @@ public class GifListFragment extends BaseFragment {
                 e.printStackTrace();
             }
         }
+        try {
+            MediaStore.Images.Media.insertImage(mActivity.getContentResolver(), target.getAbsolutePath(), "", "");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Uri uri = Uri.fromFile(target);
+        Timber.tag("GifMakeService").i("imageUri------>" + uri);
+        //imageUri------>file:///storage/emulated/0/MyAndroidBase/mybase/1574394370534.jpg
+        Intent localIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        mActivity.sendBroadcast(localIntent);
+
+    }
+
+    public Uri getImageContentUri(Context context, String filePath) {
+        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media._ID}, MediaStore.Images.Media.DATA + "=? ",
+                new String[]{filePath}, null);
+        Uri uri = null;
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+                Uri baseUri = Uri.parse("content://media/external/images/media");
+                uri = Uri.withAppendedPath(baseUri, "" + id);
+            }
+
+            cursor.close();
+        }
+
+        if (uri == null) {
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.DATA, filePath);
+            uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        }
+
+        return uri;
     }
 }

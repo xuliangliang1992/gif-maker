@@ -130,7 +130,7 @@ public class CameraActivity extends BaseActivity {
 
     private void startRecording() {
         mBinding.btnChangeShot.setVisibility(View.INVISIBLE);
-        file = FileUtil.createFile(DateUtil.getCurrentTimeYMD() + ".mp4", FileUtil.FILE_TYPE_VIDEO);
+        file = FileUtil.createFile(this, DateUtil.getCurrentTimeYMD() + ".mp4");
         mBinding.camera.setFlash(FlashMode.ON);
         mBinding.camera.setCameraLensFacing(CameraX.LensFacing.BACK);
         mBinding.camera.setCaptureMode(CameraView.CaptureMode.VIDEO);

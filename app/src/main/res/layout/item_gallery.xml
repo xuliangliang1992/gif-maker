@@ -18,22 +18,22 @@
 
         <ImageView
             android:id="@+id/iv_download"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
-            android:src="@mipmap/start"
+            android:src="@mipmap/download"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/iv"
             app:layout_constraintEnd_toEndOf="@+id/iv" />
 
         <ImageView
             android:id="@+id/iv_share"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginBottom="10dp"
             android:layout_marginEnd="10dp"
-            android:src="@mipmap/stop"
+            android:src="@mipmap/share"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/iv"
             app:layout_constraintEnd_toEndOf="@+id/iv" />

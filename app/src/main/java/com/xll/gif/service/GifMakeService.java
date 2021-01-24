@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 
 import com.highlands.common.dialog.DialogManager;
 import com.xll.gif.MainApplication;
@@ -13,6 +14,7 @@ import com.xll.gif.activity.MainActivity;
 import com.xll.gif.util.GifMaker;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.List;
 import timber.log.Timber;
 
 public class GifMakeService extends IntentService {
+    private String TAG = "GifMakeService";
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     public static final String ACTION_MAKE_GIF_FROM_VIDEO = "com.xll.gif.action.MAKE_GIF_VIDEO";
     public static final String ACTION_MAKE_GIF_FROM_PHOTO = "com.xll.gif.action.MAKE_GIF_PHOTO";
@@ -123,14 +126,14 @@ public class GifMakeService extends IntentService {
         maker.setOnGifListener(new GifMaker.OnGifListener() {
             @Override
             public void onMake(int current, int total) {
-                Timber.tag("GifMakeService").i("current = " + current + "   total = " + total);
+                Timber.tag(TAG).i("current = " + current + "   total = " + total);
             }
         });
         long startAt = System.currentTimeMillis();
         final boolean success = maker.makeGifFromVideo(fromFile, fromPosition, toPosition, period, toFile);
         long now = System.currentTimeMillis();
         DialogManager.getInstance().dismissProgressDialog();
-        Timber.tag("GifMakeService").i("Done! " + (success ? " success " : " failed ") + " cost time=" + ((now - startAt) / 1000) + " seconds " + " \nsave at=" + toFile);
+        Timber.tag(TAG).i("Done! " + (success ? " success " : " failed ") + " cost time=" + ((now - startAt) / 1000) + " seconds " + " \nsave at=" + toFile);
         Intent intent = new Intent(this, EditGifActivity.class);
         intent.putExtra("filePath", toFile);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -142,7 +145,7 @@ public class GifMakeService extends IntentService {
         maker.setOnGifListener(new GifMaker.OnGifListener() {
             @Override
             public void onMake(int current, int total) {
-                Timber.tag("GifMakeService").i("current = " + current + "   total = " + total);
+                Timber.tag(TAG).i("current = " + current + "   total = " + total);
             }
         });
         long startAt = System.currentTimeMillis();
@@ -154,7 +157,7 @@ public class GifMakeService extends IntentService {
         }
         long now = System.currentTimeMillis();
         DialogManager.getInstance().dismissProgressDialog();
-        Timber.tag("GifMakeService").i("Done! " + (success ? " success " : " failed ") + " cost time=" + ((now - startAt) / 1000) + " seconds " + " \nsave at=" + toFile);
+        Timber.tag(TAG).i("Done! " + (success ? " success " : " failed ") + " cost time=" + ((now - startAt) / 1000) + " seconds " + " \nsave at=" + toFile);
         Intent intent = new Intent(this, EditGifActivity.class);
         intent.putExtra("filePath", toFile);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -167,7 +170,7 @@ public class GifMakeService extends IntentService {
         maker.setOnGifListener(new GifMaker.OnGifListener() {
             @Override
             public void onMake(int current, int total) {
-                Timber.tag("GifMakeService").i("current = " + current + "   total = " + total);
+                Timber.tag(TAG).i("current = " + current + "   total = " + total);
             }
         });
         long startAt = System.currentTimeMillis();
@@ -179,21 +182,18 @@ public class GifMakeService extends IntentService {
         }
         long now = System.currentTimeMillis();
         DialogManager.getInstance().dismissProgressDialog();
-        Timber.tag("GifMakeService").i("Done! " + (success ? " success " : " failed ") + " cost time=" + ((now - startAt) / 1000) + " seconds " + " \nsave at=" + toFile);
+        Timber.tag(TAG).i("Done! " + (success ? " success " : " failed ") + " cost time=" + ((now - startAt) / 1000) + " seconds " + " \nsave at=" + toFile);
         DialogManager.getInstance().dismissProgressDialog();
         if (success) {
             //通知系统相册刷新
-//            ContentValues values = new ContentValues();
-//            values.put(MediaStore.Images.Media.DESCRIPTION, "This is an gif");
-//            values.put(MediaStore.Images.Media.DISPLAY_NAME, now);
-//            values.put(MediaStore.Images.Media.MIME_TYPE, "image/gif");
-//            values.put(MediaStore.Images.Media.TITLE, "Image.gif");
-//            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/");
-//            Uri external = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-//            ContentResolver resolver = getContentResolver();
-//            resolver.insert(external, values);
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                    Uri.fromFile(new File(toFile))));
+            try {
+                MediaStore.Images.Media.insertImage(getContentResolver(), toFile, "", "");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            Uri uri = Uri.fromFile(new File(toFile));
+            Intent localIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+            sendBroadcast(localIntent);
             startActivity(new Intent(this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }

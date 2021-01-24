@@ -54,7 +54,7 @@ public class GifGhyAdapter extends BaseSingleBindingAdapter<GifListFragment.GifB
                     .subscribe(new Consumer<Unit>() {
                         @Override
                         public void accept(Unit unit) throws Exception {
-                            mGalleryClickListener.onImageDownload(position, url);
+                            mGalleryClickListener.onImageDownload(position,url, mItems.get(position));
                         }
                     }));
             addDisposable(RxView.clicks(binding.ivShare)
@@ -70,7 +70,7 @@ public class GifGhyAdapter extends BaseSingleBindingAdapter<GifListFragment.GifB
     }
 
     public interface onGalleryClickListener {
-        void onImageDownload(int position, String url);
+        void onImageDownload(int position, String url, GifListFragment.GifBean gifBean);
 
         void onImageShare(int position, String path);
     }

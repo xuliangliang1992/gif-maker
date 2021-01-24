@@ -117,9 +117,9 @@ public class VideoEditActivity extends BaseActivity {
     }
 
     private void tryMaker() {
-        final File file = FileUtil.createFile(DateUtil.getCurrentTimeYMDHMS() + ".gif", FileUtil.FILE_TYPE_GIF);
-        if(mBinding.vsb.getEndTime()-mBinding.vsb.getStartTime()<3000){
-            ToastUtil.showToast(this,"video can't less than 2 seconds");
+        final File file = FileUtil.createFile(this, DateUtil.getCurrentTimeYMDHMS() + ".gif");
+        if (mBinding.vsb.getEndTime() - mBinding.vsb.getStartTime() < 3000) {
+            ToastUtil.showToast(this, "video can't less than 2 seconds");
         }
         GifMakeService.startMaking(this, path, file.getAbsolutePath(), (int) mBinding.vsb.getStartTime(), (int) mBinding.vsb.getEndTime(), 200);
     }
