@@ -12,14 +12,14 @@ import android.provider.MediaStore;
 import android.view.View;
 
 import com.highlands.common.base.BaseActivity;
+import com.highlands.common.util.PermissionUtil;
 import com.highlands.common.util.ToastUtil;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.xll.gif.BitmapEntity;
-import com.xll.gif.ImageFloder;
 import com.xll.gif.R;
 import com.xll.gif.adapter.VideoGalleryAdapter;
 import com.xll.gif.databinding.GalleryActivityBinding;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,19 +35,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 public class VideoListActivity extends BaseActivity {
 
     private GalleryActivityBinding mBinding;
-    private int mPicsSize;
-    private List<String> mDirPaths;
-    private List<ImageFloder> mImageFloders;
-    private File mImgDir;
 
-    Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             mAdapter.refresh(bit);
             hideLoading();//取消加载框
-            //            initListDirPopupWindw();//初始化小相册的popupWindow
-            //            initChekcBox();//初始化checkbox集合，防止checkBox的错乱
         }
     };
 
@@ -68,9 +62,13 @@ public class VideoListActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        mImageFloders = new ArrayList<>();
-        mDirPaths = new ArrayList<>();
         bit = new ArrayList<>();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         getImages();
     }
 
@@ -85,7 +83,28 @@ public class VideoListActivity extends BaseActivity {
         mAdapter.setGalleryClickListener(new VideoGalleryAdapter.onGalleryClickListener() {
             @Override
             public void onImageSelect(String picPath) {
-                startActivity(new Intent(VideoListActivity.this,VideoEditActivity.class).putExtra("videoPath",picPath));
+                startActivity(new Intent(VideoListActivity.this, VideoEditActivity.class).putExtra("videoPath", picPath));
+            }
+
+            @Override
+            public void toCamera() {
+                PermissionUtil.launchCamera(new PermissionUtil.RequestPermission() {
+                    @Override
+                    public void onRequestPermissionSuccess() {
+                        startActivity(new Intent(VideoListActivity.this, CameraActivity.class).putExtra("isImage", false));
+                    }
+
+                    @Override
+                    public void onRequestPermissionFailure(List<String> permissions) {
+
+                    }
+
+                    @Override
+                    public void onRequestPermissionFailureWithAskNeverAgain(List<String> permissions) {
+
+                    }
+                }, new RxPermissions(VideoListActivity.this));
+
             }
         });
     }
@@ -102,61 +121,40 @@ public class VideoListActivity extends BaseActivity {
             @Override
             public void run() {
                 String[] projection = {
-
                         MediaStore.Video.Media.DATA,
-
                         MediaStore.Video.Media.DISPLAY_NAME,
-
                         MediaStore.Video.Media.DURATION,
-
                         MediaStore.Video.Media.SIZE
-
                 };
 
                 /**
                  * 根据视频文件格式 进行数据库查询
                  */
-
                 String where = MediaStore.Images.Media.MIME_TYPE + "=? or "
-
                         + MediaStore.Video.Media.MIME_TYPE + "=? or "
-
                         + MediaStore.Video.Media.MIME_TYPE + "=? or "
-
                         + MediaStore.Video.Media.MIME_TYPE + "=? or "
-
                         + MediaStore.Video.Media.MIME_TYPE + "=? or "
-
                         + MediaStore.Video.Media.MIME_TYPE + "=? or "
-
                         + MediaStore.Video.Media.MIME_TYPE + "=? or "
-
                         + MediaStore.Video.Media.MIME_TYPE + "=? or "
-
                         + MediaStore.Video.Media.MIME_TYPE + "=?";
 
                 String[] whereArgs = {"video/mp4", "video/3gp", "video/aiv", "video/rmvb", "video/vob", "video/flv",
-
                         "video/mkv", "video/mov", "video/mpg"};
                 Uri mImageUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
                 ContentResolver mContentResolver = VideoListActivity.this.getContentResolver();
-
                 Cursor cursor = mContentResolver.query(mImageUri, projection, where, whereArgs, MediaStore.Video.Media.DATE_ADDED + " DESC ");//获取图片的cursor，按照时间倒序（发现没卵用)
 
                 try {
-
                     while (cursor.moveToNext()) {
-
                         long size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)); // 大小
                         /**
                          * 过滤文件大小
                          */
                         if (size < 600 * 1024 * 1024) {
-
                             BitmapEntity vedioBean = new BitmapEntity();
-
                             String path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)); // 路径
-
                             long duration = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)); // 时长
                             /**
                              * 设置视频实体属性
@@ -167,21 +165,13 @@ public class VideoListActivity extends BaseActivity {
                             vedioBean.setSize(size);
                             vedioBean.setUri_thumb(path);
                             bit.add(vedioBean);
-
                         }
-
                     }
-
                 } catch (Exception e) {
-
                     e.printStackTrace();
-
                 } finally {
-
                     cursor.close();
-
                 }
-
                 mHandler.sendEmptyMessage(1);
             }
         }).start();

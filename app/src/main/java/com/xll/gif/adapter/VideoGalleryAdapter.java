@@ -1,7 +1,7 @@
 package com.xll.gif.adapter;
 
-import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.highlands.common.base.adapter.BaseSingleBindingAdapter;
 import com.highlands.common.util.glide.GlideUtil;
@@ -17,7 +17,6 @@ import com.xll.gif.databinding.ItemGalleryBinding;
 public class VideoGalleryAdapter extends BaseSingleBindingAdapter<BitmapEntity, ItemGalleryBinding> {
     onGalleryClickListener mGalleryClickListener;
 
-
     public void setGalleryClickListener(onGalleryClickListener galleryClickListener) {
         mGalleryClickListener = galleryClickListener;
     }
@@ -30,12 +29,20 @@ public class VideoGalleryAdapter extends BaseSingleBindingAdapter<BitmapEntity, 
     @Override
     protected void onBindItem(ItemGalleryBinding binding, int position) {
         binding.executePendingBindings();
-        //        binding.iv.setLayoutParams(new ConstraintLayout.LayoutParams(
-        //                ConstraintLayout.LayoutParams.MATCH_PARENT,
-        //                SystemUtil.getScreenWidth(binding.getRoot().getContext()) / 3));
-            binding.cb.setVisibility(View.GONE);
+        binding.cb.setVisibility(View.GONE);
+        if (position == 0) {
+            binding.iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            binding.iv.setImageResource(R.mipmap.add);
+            if (mGalleryClickListener != null) {
+                binding.iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mGalleryClickListener.toCamera();
+                    }
+                });
+            }
+        } else {
             String picPath = mItems.get(position).getPath();
-            Log.i( "onBindItem: ",picPath);
             //这里采用的是Glide为ImageVIew加载图片，很方便，这里对Glide进行了工具类的封装
             GlideUtil.loadImage2(binding.getRoot().getContext(), picPath, binding.iv);
             if (mGalleryClickListener != null) {
@@ -46,10 +53,13 @@ public class VideoGalleryAdapter extends BaseSingleBindingAdapter<BitmapEntity, 
                     }
                 });
             }
+        }
     }
 
-   public interface onGalleryClickListener {
+    public interface onGalleryClickListener {
         void onImageSelect(String picPath);
+
+        void toCamera();
     }
 }
 

@@ -1,10 +1,14 @@
 package com.xll.gif.activity;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
 
@@ -17,6 +21,7 @@ import com.xll.gif.R;
 import com.xll.gif.databinding.ActivityCameraBinding;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -25,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.CameraX;
 import androidx.camera.core.FlashMode;
+import androidx.camera.core.ImageCapture;
 import androidx.camera.core.VideoCapture;
 import androidx.camera.view.CameraView;
 import androidx.databinding.DataBindingUtil;
@@ -50,6 +56,7 @@ public class CameraActivity extends BaseActivity {
     int currentIndex;
     int videoCount;
     long seconds;
+    private boolean isImage;
 
     private Disposable mDisposable;
 
@@ -72,7 +79,7 @@ public class CameraActivity extends BaseActivity {
     @SuppressLint("MissingPermission")
     protected void initData() {
         mCompositeDisposable = new CompositeDisposable();
-
+        isImage = getIntent().getBooleanExtra("isImage", false);
         mBinding.camera.bindToLifecycle(this);
         mExecutor = Executors.newSingleThreadExecutor();
 
@@ -84,7 +91,13 @@ public class CameraActivity extends BaseActivity {
 
         mCompositeDisposable.add(RxView.clicks(mBinding.btnStart)
                 .throttleFirst(1, TimeUnit.SECONDS)
-                .subscribe(o -> startRecording()));
+                .subscribe(o -> {
+                    if (isImage) {
+                        startTakePhoto();
+                    } else {
+                        startRecording();
+                    }
+                }));
         mCompositeDisposable.add(RxView.clicks(mBinding.btnStop)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe(o -> {
@@ -128,6 +141,39 @@ public class CameraActivity extends BaseActivity {
         });
     }
 
+    private void startTakePhoto() {
+        file = FileUtil.createFile(this, DateUtil.getCurrentTimeYMD() + ".jpg");
+        mBinding.camera.setCaptureMode(CameraView.CaptureMode.IMAGE);
+        mBinding.btnStart.setVisibility(View.VISIBLE);
+        mBinding.btnStop.setVisibility(View.GONE);
+        mBinding.tvTime.setVisibility(View.GONE);
+        mBinding.camera.takePicture(file, mExecutor, new ImageCapture.OnImageSavedListener() {
+            @Override
+            public void onImageSaved(@NonNull File file) {
+                refreshPicture(file);
+
+                finish();
+            }
+
+            @Override
+            public void onError(@NonNull ImageCapture.ImageCaptureError imageCaptureError, @NonNull String message, @Nullable Throwable cause) {
+
+            }
+        });
+    }
+
+    private void refreshPicture(@NonNull File file) {
+        //通知系统相册刷新
+        try {
+            MediaStore.Images.Media.insertImage(getContentResolver(), file.getAbsolutePath(), "", "");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Uri uri = Uri.fromFile(file);
+        Intent localIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+        sendBroadcast(localIntent);
+    }
+
     private void startRecording() {
         mBinding.btnChangeShot.setVisibility(View.INVISIBLE);
         file = FileUtil.createFile(this, DateUtil.getCurrentTimeYMD() + ".mp4");
@@ -142,6 +188,7 @@ public class CameraActivity extends BaseActivity {
             public void onVideoSaved(@NonNull File file) {
                 Timber.tag(TAG).i("onVideoSaved: " + file.getPath());
                 hideLoading();
+                insertIntoMediaStore(CameraActivity.this, true, file, System.currentTimeMillis());
                 startActivity(new Intent(CameraActivity.this, VideoEditActivity.class).putExtra("videoPath", file.getPath()));
             }
 
@@ -248,5 +295,40 @@ public class CameraActivity extends BaseActivity {
             ToastUtil.showToast(this, "no camera on this device");
             return false;
         }
+    }
+
+    //针对非系统影音资源文件夹
+    public static void insertIntoMediaStore(Context context, boolean isVideo, File saveFile, long createTime) {
+        ContentResolver mContentResolver = context.getContentResolver();
+        if (createTime == 0)
+            createTime = System.currentTimeMillis();
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.TITLE, saveFile.getName());
+        values.put(MediaStore.MediaColumns.DISPLAY_NAME, saveFile.getName());
+        //值一样，但是还是用常量区分对待
+        values.put(isVideo ? MediaStore.Video.VideoColumns.DATE_TAKEN
+                : MediaStore.Images.ImageColumns.DATE_TAKEN, createTime);
+        values.put(MediaStore.MediaColumns.DATE_MODIFIED, System.currentTimeMillis());
+        values.put(MediaStore.MediaColumns.DATE_ADDED, System.currentTimeMillis());
+        if (!isVideo)
+            values.put(MediaStore.Images.ImageColumns.ORIENTATION, 0);
+        values.put(MediaStore.MediaColumns.DATA, saveFile.getAbsolutePath());
+        values.put(MediaStore.MediaColumns.SIZE, saveFile.length());
+        values.put(MediaStore.MediaColumns.MIME_TYPE, isVideo ? getVideoMimeType(saveFile.getAbsolutePath())/*"video/3gp"*/ : "image/jpeg");
+        //插入
+        mContentResolver.insert(isVideo
+                ? MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                : MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+    }
+
+    // 获取video的mine_type,暂时只支持mp4,3gp
+    private static String getVideoMimeType(String path) {
+        String lowerPath = path.toLowerCase();
+        if (lowerPath.endsWith("mp4") || lowerPath.endsWith("mpeg4")) {
+            return "video/mp4";
+        } else if (lowerPath.endsWith("3gp")) {
+            return "video/3gp";
+        }
+        return "video/mp4";
     }
 }

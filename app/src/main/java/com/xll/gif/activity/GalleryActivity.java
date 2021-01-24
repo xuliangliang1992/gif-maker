@@ -15,19 +15,15 @@ import android.view.View;
 import com.highlands.common.base.BaseRewardedAdActivity;
 import com.highlands.common.dialog.DialogClickListener;
 import com.highlands.common.dialog.DialogManager;
+import com.highlands.common.util.PermissionUtil;
 import com.highlands.common.util.ToastUtil;
-import com.xll.gif.ImageFloder;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.xll.gif.MainApplication;
 import com.xll.gif.R;
 import com.xll.gif.adapter.GalleryAdapter;
 import com.xll.gif.databinding.GalleryActivityBinding;
 
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -42,25 +38,19 @@ import androidx.recyclerview.widget.GridLayoutManager;
 public class GalleryActivity extends BaseRewardedAdActivity {
 
     private GalleryActivityBinding mBinding;
-    private int mPicsSize;
-    private List<String> mDirPaths;
-    private List<ImageFloder> mImageFloders;
-    private File mImgDir;
 
-    Handler mHandler = new Handler() {
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             setAdapterData();//设置图片的显示
             hideLoading();//取消加载框
-            //            initListDirPopupWindw();//初始化小相册的popupWindow
-            //            initChekcBox();//初始化checkbox集合，防止checkBox的错乱
         }
     };
     private GalleryAdapter mAdapter;
     private List<String> mImgs;
-    String[] imgTypes;
-    String[] currTypes;
+    private String[] imgTypes;
+    private String[] currTypes;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,16 +66,42 @@ public class GalleryActivity extends BaseRewardedAdActivity {
 
     @Override
     protected void initData() {
-        mImageFloders = new ArrayList<>();
-        mDirPaths = new ArrayList<>();
         mImgs = new ArrayList<>();
         imgTypes = new String[]{"image/jpeg", "image/png", "image/jpg"};
         currTypes = imgTypes;
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         getImages();
     }
 
     @Override
     protected void initListener() {
+        mAdapter.setGalleryClickListener(new GalleryAdapter.onGalleryClickListener() {
+            @Override
+            public void openBottomDialog() {
+                PermissionUtil.launchCamera(new PermissionUtil.RequestPermission() {
+                    @Override
+                    public void onRequestPermissionSuccess() {
+                        startActivity(new Intent(GalleryActivity.this, CameraActivity.class).putExtra("isImage", true));
+                    }
+
+                    @Override
+                    public void onRequestPermissionFailure(List<String> permissions) {
+
+                    }
+
+                    @Override
+                    public void onRequestPermissionFailureWithAskNeverAgain(List<String> permissions) {
+
+                    }
+                }, new RxPermissions(GalleryActivity.this));
+            }
+        });
         mBinding.llBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,9 +117,9 @@ public class GalleryActivity extends BaseRewardedAdActivity {
                     return;
                 }
                 if (MainApplication.isAuth() || MainApplication.isAdAuth()) {
-                    Intent intent = new Intent(GalleryActivity.this,EditGif2Activity.class);
+                    Intent intent = new Intent(GalleryActivity.this, EditGif2Activity.class);
                     MainApplication.setBitmaps(bitmaps);
-                    intent.putExtra("from",true);
+                    intent.putExtra("from", true);
                     startActivity(intent);
                 } else {
                     DialogManager.getInstance().showAuthDialog(GalleryActivity.this,
@@ -152,83 +168,25 @@ public class GalleryActivity extends BaseRewardedAdActivity {
 
                 while (mCursor.moveToNext()) {
                     String path = mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA));// 1.获取图片的路径
-                    File parentFile = new File(path).getParentFile();
-                    if (parentFile == null)
-                        continue;//不获取sd卡根目录下的图片
-                    String parentPath = parentFile.getAbsolutePath();//2.获取图片的文件夹信息
-                    String parentName = parentFile.getName();
-                    ImageFloder imageFloder;//自定义一个model，来保存图片的信息
-
-                    //这个操作，可以提高查询的效率，将查询的每一个图片的文件夹的路径保存到集合中，
-                    //如果存在，就直接查询下一个，避免对每一个文件夹进行查询操作
-                    if (mDirPaths.contains(parentPath)) {
-                        continue;
-                    } else {
-                        mDirPaths.add(parentPath);//将父路径添加到集合中
-                        imageFloder = new ImageFloder();
-                        imageFloder.setFirstImagePath(path);
-                        imageFloder.setDir(parentPath);
-                        imageFloder.setName(parentName);
-                    }
-                    List<String> strings = null;
-                    try {
-                        strings = Arrays.asList(parentFile.list(getFilterImage()));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    int picSize = strings.size();//获取每个文件夹下的图片个数
-                    imageFloder.setCount(picSize);//传入每个相册的图片个数
-                    mImageFloders.add(imageFloder);//添加每一个相册
-                    //获取图片最多的文件夹信息（父目录对象和个数，使得刚开始显示的是最多图片的相册
-                    if (picSize > mPicsSize) {
-                        mPicsSize = picSize;
-                        mImgDir = parentFile;
-                    }
+                    mImgs.add(path);
                 }
                 mCursor.close();
-                mDirPaths = null;
                 mHandler.sendEmptyMessage(1);
             }
         }).start();
     }
 
-    //图片筛选器，过滤无效图片
-    private FilenameFilter getFilterImage() {
-        FilenameFilter filenameFilter = new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String filename) {
-                if (filename.endsWith(".jpg")
-                        || filename.endsWith(".png")
-                        || filename.endsWith(".jpeg"))
-                    return true;
-                return false;
-            }
-        };
-        return filenameFilter;
-    }
-
     //设置适配器数据
     private void setAdapterData() {
-        if (mImgDir == null) {
-            ToastUtil.showToast(this, "没有查询到图片");
-            return;
-        }
-        //        tv_pop_gallery.setText(mImgDir.getName());
-        try {
-            mImgs = Arrays.asList(mImgDir.list(getFilterImage()));//获取文件夹下的图片集合
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         //查询出来的图片是正序的，为了让图片按照时间倒序显示，对其倒序操作
-        Collections.sort(mImgs, new Comparator<String>() {
-            @Override
-            public int compare(String lhs, String rhs) {
-                return -1;
-            }
-        });
-
+//        Collections.sort(mImgs, new Comparator<String>() {
+//            @Override
+//            public int compare(String lhs, String rhs) {
+//                return -1;
+//            }
+//        });
+        mImgs.add(0, "");
         mAdapter.refresh(mImgs);
-        mAdapter.setImgDir(mImgDir);
     }
 
 }

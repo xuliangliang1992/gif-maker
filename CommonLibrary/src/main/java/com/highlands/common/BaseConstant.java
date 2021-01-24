@@ -13,6 +13,7 @@ public class BaseConstant {
     public static final int MOVE_RIGHT = 7;
     public static final int ADD_TEXT_REQUEST_CODE = 0x03;
     public static final int ADD_ICON_REQUEST_CODE = 0x04;
+    public static final int CAMERA_REQUEST_CODE = 0x05;
 
     public static final String BASE_URL = "https://www.gifmakerapi.com/";
     //    public static final String BASE_URL = "https://api.prd.tianfu.icu/";

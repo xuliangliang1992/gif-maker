@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 
+import com.highlands.common.base.BaseActivity;
 import com.highlands.common.base.fragment.BaseFragment;
 
 
@@ -36,6 +37,22 @@ public class PhotoUtil {
         //将拍照结果保存至photo_file的Uri中，不保留在相册中
         intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         fragment.startActivityForResult(intentCamera, requestCode);
+    }
+
+    /**
+     * 拍照
+     *
+     * @param activity
+     * @param imageUri
+     * @param requestCode
+     */
+    public static void takePicture(BaseActivity activity, Uri imageUri, int requestCode) {
+        //调用系统相机
+        Intent intentCamera = new Intent();
+        intentCamera.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+        //将拍照结果保存至photo_file的Uri中，不保留在相册中
+        intentCamera.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        activity.startActivityForResult(intentCamera, requestCode);
     }
 
     /**
