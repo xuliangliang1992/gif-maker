@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "685629838264",
+    "project_id": "gif-maker-fa4ff",
+    "storage_bucket": "gif-maker-fa4ff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685629838264:android:feeaa8d93a9c39bda5754d",
+        "android_client_info": {
+          "package_name": "com.xll.gif"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "685629838264-f22de4qei4bh56ti3j9aiup6tgticf4t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8tdzic1cgxxXNukdPNGyzVQM5cpGZMOY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "685629838264-f22de4qei4bh56ti3j9aiup6tgticf4t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

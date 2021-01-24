@@ -1,0 +1,3 @@
+include ':CommonLibrary'
+include ':app'
+rootProject.name = "Gif"

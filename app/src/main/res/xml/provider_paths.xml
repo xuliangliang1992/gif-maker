@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path path="." name="external_storage_root" />
+    <external-path path="/com.xll.gif/Apk_Sp/" name="apkFiles" />
+    <external-path path="/com.xll.gif/Photo/" name="imageFiles" />
+    <external-path path="/com.xll.gif/video/" name="videoFiles" />
+    <external-path path="/com.xll.gif/gif/" name="gifFiles" />
+</paths>

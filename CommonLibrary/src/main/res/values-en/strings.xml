@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="cancel">取消</string>
+    <string name="sure">确定</string>
+
+    <string name="LatoBold">fonts/LatoBold.ttf</string>
+    <string name="LatoRegular">fonts/LatoRegular.ttf</string>
+    <string name="pf_bold">fonts/pf_bold.ttf</string>
+
+    <string name="login">登录</string>
+    <string name="register">注册</string>
+    <string name="to_login"><u>去登录</u></string>
+    <string name="to_register"><u>去注册</u></string>
+    <string name="please_input_phone">请输入手机号</string>
+    <string name="please_input_code">请输入验证码</string>
+    <string name="please_input_password">请输入密码</string>
+    <string name="error_phone">手机号不对</string>
+
+    <string name="policy">政策详解</string>
+    <string name="video_item">视频</string>
+    <string name="explanation">专家文章</string>
+    <string name="living">直播</string>
+    <string name="news">新闻</string>
+    <string name="teacher">讲师</string>
+    <string name="information">资讯</string>
+    <string name="train">培训</string>
+    <string name="ask">咨询</string>
+
+
+    <string name="all">全部</string>
+    <string name="not_started">未开始</string>
+    <string name="live">直播中</string>
+    <string name="over">已结束</string>
+    <string name="follow">关注</string>
+    <string name="un_follow">取关</string>
+    <string name="my_profile">我的资料</string>
+    <string name="playback">观看回放</string>
+    <string name="notice_me">提醒我</string>
+    <string name="to_look">去看看</string>
+    <string name="noticed">已开启提醒</string>
+    <string name="live_time">直播时间</string>
+    <string name="live_start_time">开始时间</string>
+    <string name="live_end_time">结束时间</string>
+    <string name="upload">上传</string>
+
+
+    <string name="more_service">更多服务</string>
+    <string name="my_group_chat">我的群聊</string>
+    <string name="mails">站内信</string>
+    <string name="browse">历史记录</string>
+    <string name="custom_service">客服</string>
+    <string name="logout">退出登录</string>
+    <string name="my_collect">我的收藏</string>
+    <string name="my_follow">我的关注</string>
+    <string name="my_comment">我的评论</string>
+    <string name="my_praise">我的赞</string>
+    <string name="chat">群聊</string>
+    <string name="renew"><u>续费</u></string>
+    <string name="renew2"><u>重新续费</u></string>
+    <string name="visit_num">浏览量</string>
+    <string name="praise_num">赞</string>
+    <string name="normal_teacher">普通讲师</string>
+    <string name="gaoji_teacher">高级讲师</string>
+    <string name="doctor">教授</string>
+    <string name="default_company">所属公司</string>
+    <string name="comment_list">评论列表</string>
+    <string name="collect">收藏</string>
+    <string name="collected">已收藏</string>
+    <string name="praise">点赞</string>
+    <string name="praised">已点赞</string>
+    <string name="comment">评论</string>
+    <string name="check_business_license">查看</string>
+    <string name="how_to_vip"><u>如何成为付费会员 ></u></string>
+    <string name="how_to_vip2">如何成为付费会员</string>
+    <string name="share">共享</string>
+    <string name="share_text">我们正在加紧制作中，即将上线，敬请期待</string>
+    <string name="call_us">更多会员合作方案，请与我们联系。</string>
+    <string name="live_delay">已延期</string>
+    <string name="look_num">观看人数</string>
+
+    <string name="delete_teacher">讲师已删除</string>
+    <string name="delete_video">视频已删除</string>
+    <string name="delete_policy">政策已删除</string>
+    <string name="delete_live">直播已删除</string>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:background="@drawable/view_toast_bg2"
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:paddingBottom="20dp"
+              android:paddingEnd="13dp"
+              android:paddingStart="13dp"
+              android:paddingTop="20dp">
+
+<ImageView
+    android:layout_width="20dp"
+    android:layout_height="20dp"
+    android:src="@drawable/attention"/>
+    <TextView
+        android:id="@+id/tv_toast_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="内容已删除"
+        android:layout_marginStart="7dp"
+        android:textColor="@color/black_212222"
+        android:textSize="16sp"/>
+
+</LinearLayout>
