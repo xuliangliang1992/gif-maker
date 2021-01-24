@@ -1,5 +1,7 @@
 package com.xll.gif.adapter;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.SparseBooleanArray;
 import android.view.View;
 
@@ -34,11 +36,12 @@ public class GalleryAdapter extends BaseSingleBindingAdapter<String, ItemGallery
         mGalleryClickListener = galleryClickListener;
     }
 
-    public ArrayList<String> getSelectedPhoto() {
-        ArrayList<String> list = new ArrayList<>();
+    public ArrayList<Bitmap> getSelectedPhoto() {
+        ArrayList<Bitmap> list = new ArrayList<>();
         for (int i = 0; i < mBooleanArray.size(); i++) {
             if (mBooleanArray.get(i)) {
-                list.add(mImgDir.getAbsolutePath() + "/" + mItems.get(i));
+                Bitmap bitmap= BitmapFactory.decodeFile(mImgDir.getAbsolutePath() + "/" + mItems.get(i));
+                list.add(bitmap);
             }
         }
         return list;

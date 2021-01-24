@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.highlands.common.BaseConstant;
+import com.highlands.common.util.SystemUtil;
 import com.xll.gif.R;
 
 import java.util.ArrayList;
@@ -321,7 +322,7 @@ public class MyRelativeIconLayout extends RelativeLayout {
 //            textView.setEms(1);
             textView.setTag(System.currentTimeMillis());
 //            textView.setText(content);
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(SystemUtil.dip2px(context,100), SystemUtil.dip2px(context,100));
             textView.setLayoutParams(params);
 //            textView.setTextSize(mtextSize);
 //            textView.setTextColor(color);

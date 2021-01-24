@@ -9,9 +9,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.highlands.common.BaseConstant;
-import com.highlands.common.base.BaseActivity;
+import com.highlands.common.base.BaseRewardedAdActivity;
+import com.highlands.common.dialog.DialogClickListener;
+import com.highlands.common.dialog.DialogManager;
 import com.highlands.common.util.DateUtil;
 import com.highlands.common.util.FileUtil;
+import com.highlands.common.util.ToastUtil;
 import com.warkiz.tickseekbar.OnSeekChangeListener;
 import com.warkiz.tickseekbar.SeekParams;
 import com.warkiz.tickseekbar.TickSeekBar;
@@ -35,7 +38,7 @@ import pl.droidsonroids.gif.GifDrawable;
  * @date 2021/1/21
  * copyright(c) 浩鲸云计算科技股份有限公司
  */
-public class EditGif2Activity extends BaseActivity {
+public class EditGif2Activity extends BaseRewardedAdActivity {
 
     EditGif2ActivityBinding mBinding;
     GifAnimationDrawable mAnimationDrawable;
@@ -44,7 +47,7 @@ public class EditGif2Activity extends BaseActivity {
     List<Bitmap> list;
     private int delay;
     int iconId;
-    String text;
+    boolean fromGallery;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,9 +63,14 @@ public class EditGif2Activity extends BaseActivity {
     protected void initData() {
         iconId = -1;
         path = getIntent().getStringExtra("filePath");
-        list = new ArrayList<>();
-        mAnimationDrawable = new GifAnimationDrawable();
-        initGiv2();
+        fromGallery = getIntent().getBooleanExtra("from", false);
+        if (fromGallery) {
+            list = MainApplication.getBitmaps();
+        } else {
+            list = new ArrayList<>();
+            mAnimationDrawable = new GifAnimationDrawable();
+            initGiv2();
+        }
 
         setBitmapsToAnim();
     }
@@ -109,8 +117,10 @@ public class EditGif2Activity extends BaseActivity {
                 if (mAnimationDrawable != null) {
                     if (mAnimationDrawable.isRunning()) {
                         mAnimationDrawable.stop();
+                        mBinding.ivStart.setImageResource(R.mipmap.play);
                     } else {
                         mAnimationDrawable.start();
+                        mBinding.ivStart.setImageResource(R.mipmap.pause);
                     }
                 }
             }
@@ -139,7 +149,7 @@ public class EditGif2Activity extends BaseActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(EditGif2Activity.this, AddTextActivity.class);
                 MainApplication.setBitmaps(list);
-                intent.putExtra("delay",delay);
+                intent.putExtra("delay", delay);
                 startActivityForResult(intent, BaseConstant.ADD_TEXT_REQUEST_CODE);
             }
         });
@@ -148,7 +158,7 @@ public class EditGif2Activity extends BaseActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(EditGif2Activity.this, AddIconActivity.class);
                 MainApplication.setBitmaps(list);
-                intent.putExtra("delay",delay);
+                intent.putExtra("delay", delay);
                 startActivityForResult(intent, BaseConstant.ADD_ICON_REQUEST_CODE);
             }
         });
@@ -163,13 +173,38 @@ public class EditGif2Activity extends BaseActivity {
         mBinding.tvSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mAnimationDrawable != null && mAnimationDrawable.isRunning()) {
-                    mAnimationDrawable.stop();
-                    mBinding.ivStart.setImageResource(R.mipmap.play);
+
+                if (MainApplication.isAuth() || MainApplication.isAdAuth()) {
+                    editGif();
+                } else {
+                    DialogManager.getInstance().showAuthDialog(EditGif2Activity.this,
+                            new DialogClickListener() {
+                                @Override
+                                public void leftClickListener() {
+                                    playAd();
+                                }
+
+                                @Override
+                                public void rightClickListener() {
+                                    ToastUtil.showToast(EditGif2Activity.this, "try for free");
+                                    //                                    if (MainApplication.isAuth() || MainApplication.isAdAuth()) {
+                                    //                                        editGif();
+                                    //                                    } else {
+                                    //                                        ToastUtil.showToast(EditGif2Activity.this, "You can use this function after watching the advertisement");
+                                    //                                    }
+                                }
+                            });
                 }
-                tryMaker();
             }
         });
+    }
+
+    private void editGif() {
+        if (mAnimationDrawable != null && mAnimationDrawable.isRunning()) {
+            mAnimationDrawable.stop();
+            mBinding.ivStart.setImageResource(R.mipmap.play);
+        }
+        tryMaker();
     }
 
     @Override
@@ -214,9 +249,10 @@ public class EditGif2Activity extends BaseActivity {
     }
 
     private void tryMaker() {
+        showLoading();
         mAnimationDrawable.stop();
         MainApplication.setBitmaps(list);
-        final File file = FileUtil.createFile(this,DateUtil.getCurrentTimeYMDHMS() + ".gif");
+        final File file = FileUtil.createFile(this, DateUtil.getCurrentTimeYMDHMS() + ".gif");
         GifMakeService.startMaking(this, delay, file.getAbsolutePath());
     }
 }

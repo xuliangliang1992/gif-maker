@@ -5,13 +5,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <Button
+            android:textSize="20dp"
+            android:textColor="@color/white"
+            android:text="Add"
+            android:layout_marginTop="20dp"
+            android:id="@+id/btn_finish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_list" />
+
+        <EditText
+            android:id="@+id/et_size"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_margin="20dp"
+            android:inputType="number"
+            android:hint="Please set Text Size"
+            app:layout_constraintTop_toBottomOf="@id/et_text" />
+
         <EditText
             android:id="@+id/et_text"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_margin="20dp"
+            android:hint="Please set Text"
             app:layout_constraintTop_toBottomOf="@id/mrl" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/et_size"/>
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/tool_bar"
             android:layout_width="match_parent"
@@ -44,16 +71,15 @@
                         android:textSize="18dp" />
                 </LinearLayout>
 
-
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:text="Add Text"
                     android:textSize="20dp"
-                    android:textStyle="bold"
-                    android:text="Add Text" />
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:id="@+id/ll_save"
@@ -70,6 +96,7 @@
                         android:textColor="#333"
                         android:textSize="18dp" />
                 </LinearLayout>
+
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
@@ -89,12 +116,6 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY" />
         </com.xll.gif.view.MyRelativeLayout>
-
-        <Button
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_finfish"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <data />

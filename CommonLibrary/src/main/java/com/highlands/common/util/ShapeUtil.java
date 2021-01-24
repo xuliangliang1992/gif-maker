@@ -48,7 +48,7 @@ public class ShapeUtil {
      * @param cornerRadius 圆角 dp
      * @param colorResId   颜色
      */
-    public static void setShape(View view, Context context, int cornerRadius,@ColorRes int colorResId) {
+    public static void setShape(View view, Context context, int cornerRadius, @ColorRes int colorResId) {
         GradientDrawable mGroupDrawable = (GradientDrawable) view.getBackground();
         if (mGroupDrawable != null) {
             mGroupDrawable.mutate();
@@ -57,21 +57,30 @@ public class ShapeUtil {
         }
     }
 
+    public static void setShape2(View view, Context context, int cornerRadius, int colorResId) {
+        GradientDrawable mGroupDrawable = (GradientDrawable) view.getBackground();
+        if (mGroupDrawable != null) {
+            mGroupDrawable.mutate();
+            mGroupDrawable.setCornerRadius(SystemUtil.dip2px(context, cornerRadius));
+            mGroupDrawable.setColor(colorResId);
+        }
+    }
+
     /**
-     * @param view         view
-     * @param context      context
-     * @param cornerRadius 圆角 dp
-     * @param colorResId   颜色
-     * @param strokeWidth   颜色
-     * @param strokeColorResId   颜色
+     * @param view             view
+     * @param context          context
+     * @param cornerRadius     圆角 dp
+     * @param colorResId       颜色
+     * @param strokeWidth      颜色
+     * @param strokeColorResId 颜色
      */
-    public static void setShape(View view, Context context, int cornerRadius,@ColorRes int colorResId,int strokeWidth,@ColorRes int strokeColorResId) {
+    public static void setShape(View view, Context context, int cornerRadius, @ColorRes int colorResId, int strokeWidth, @ColorRes int strokeColorResId) {
         GradientDrawable mGroupDrawable = (GradientDrawable) view.getBackground();
         if (mGroupDrawable != null) {
             mGroupDrawable.mutate();
             mGroupDrawable.setCornerRadius(SystemUtil.dip2px(context, cornerRadius));
             mGroupDrawable.setColor(ContextCompat.getColor(context, colorResId));
-            mGroupDrawable.setStroke(SystemUtil.dip2px(context,strokeWidth),ContextCompat.getColor(context, strokeColorResId));
+            mGroupDrawable.setStroke(SystemUtil.dip2px(context, strokeWidth), ContextCompat.getColor(context, strokeColorResId));
         }
     }
 }

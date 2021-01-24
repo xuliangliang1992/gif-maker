@@ -1,7 +1,9 @@
 package com.xll.gif.activity;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,16 +12,14 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.view.View;
 
-import com.highlands.common.base.BaseActivity;
-import com.highlands.common.util.DateUtil;
-import com.highlands.common.util.FileUtil;
-import com.highlands.common.util.PermissionUtil;
+import com.highlands.common.base.BaseRewardedAdActivity;
+import com.highlands.common.dialog.DialogClickListener;
+import com.highlands.common.dialog.DialogManager;
 import com.highlands.common.util.ToastUtil;
-import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.xll.gif.adapter.GalleryAdapter;
-import com.xll.gif.service.GifMakeService;
 import com.xll.gif.ImageFloder;
+import com.xll.gif.MainApplication;
 import com.xll.gif.R;
+import com.xll.gif.adapter.GalleryAdapter;
 import com.xll.gif.databinding.GalleryActivityBinding;
 
 import java.io.File;
@@ -39,7 +39,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
  * @date 2021/1/12
  * copyright(c) 浩鲸云计算科技股份有限公司
  */
-public class GalleryActivity extends BaseActivity {
+public class GalleryActivity extends BaseRewardedAdActivity {
 
     private GalleryActivityBinding mBinding;
     private int mPicsSize;
@@ -95,38 +95,38 @@ public class GalleryActivity extends BaseActivity {
         mBinding.tvSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mAdapter.getSelectedPhoto().size() < 3 || mAdapter.getSelectedPhoto().size() > 200) {
+                ArrayList<Bitmap> bitmaps = mAdapter.getSelectedPhoto();
+                if (mAdapter.getSelectedPhoto().size() < 3 || bitmaps.size() > 200) {
                     ToastUtil.showToast(GalleryActivity.this, "selected photo in 2 - 200!");
                     return;
                 }
-                showLoading();
+                if (MainApplication.isAuth() || MainApplication.isAdAuth()) {
+                    Intent intent = new Intent(GalleryActivity.this,EditGif2Activity.class);
+                    MainApplication.setBitmaps(bitmaps);
+                    intent.putExtra("from",true);
+                    startActivity(intent);
+                } else {
+                    DialogManager.getInstance().showAuthDialog(GalleryActivity.this,
+                            new DialogClickListener() {
+                                @Override
+                                public void leftClickListener() {
+                                    playAd();
+                                }
 
-                PermissionUtil.externalStorage(new PermissionUtil.RequestPermission() {
-                    @Override
-                    public void onRequestPermissionSuccess() {
-                        showLoading();
-                        tryMaker();
-                    }
+                                @Override
+                                public void rightClickListener() {
+                                    ToastUtil.showToast(GalleryActivity.this, "try for free");
+                                    //                                                                          if (MainApplication.isAuth() || MainApplication.isAdAuth()) {
+                                    //                                        editGif();
+                                    //                                    } else {
+                                    //                                        ToastUtil.showToast(EditGif2Activity.this, "You can use this function after watching the advertisement");
+                                    //                                    }
+                                }
+                            });
+                }
 
-                    @Override
-                    public void onRequestPermissionFailure(List<String> permissions) {
-
-                    }
-
-                    @Override
-                    public void onRequestPermissionFailureWithAskNeverAgain(List<String> permissions) {
-
-                    }
-                }, new RxPermissions(GalleryActivity.this));
             }
         });
-    }
-
-    private void tryMaker() {
-
-        final File file = FileUtil.createFile(this,DateUtil.getCurrentTimeYMDHMS() + ".gif");
-        GifMakeService.startMaking(this, mAdapter.getSelectedPhoto(), file.getAbsolutePath());
-
     }
 
     //获取图片的路径和父路径 及 图片size

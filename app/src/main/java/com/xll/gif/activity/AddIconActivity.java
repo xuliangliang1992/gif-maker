@@ -74,7 +74,9 @@ public class AddIconActivity extends BaseActivity {
             Drawable drawable = new BitmapDrawable(getResources(), mList.get(i));
             animationDrawable.addFrame(drawable, delay);
         }
+        animationDrawable.setOneShot(false);
         mBinding.iv.setImageDrawable(animationDrawable);
+        animationDrawable.setDuration(delay);
         animationDrawable.start();
     }
 
