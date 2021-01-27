@@ -89,6 +89,6 @@ dependencies {
     api platform('com.google.firebase:firebase-bom:26.2.0')
     api 'com.google.firebase:firebase-analytics'
     api 'com.google.firebase:firebase-ads:18.0.0'
-
+    api 'com.anjlab.android.iab.v3:library:1.0.44'
 
 }

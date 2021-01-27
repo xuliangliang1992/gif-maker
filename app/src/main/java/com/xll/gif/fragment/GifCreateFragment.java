@@ -2,15 +2,17 @@ package com.xll.gif.fragment;
 
 import android.Manifest;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.highlands.common.base.fragment.BaseFragment;
 import com.highlands.common.util.PermissionUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+import com.xll.gif.R;
 import com.xll.gif.activity.CameraActivity;
 import com.xll.gif.activity.GalleryActivity;
-import com.xll.gif.R;
 import com.xll.gif.activity.VideoListActivity;
 import com.xll.gif.databinding.CreateFragmentBinding;
 
@@ -44,6 +46,9 @@ public class GifCreateFragment extends BaseFragment {
     @Override
     public void initListener() {
         addClicks(mBinding.tvCtg, unit -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "video");
+            mFirebaseAnalytics.logEvent("try_for_free", bundle);
             PermissionUtil.requestPermission(new PermissionUtil.RequestPermission() {
                                                  @Override
                                                  public void onRequestPermissionSuccess() {
@@ -67,6 +72,10 @@ public class GifCreateFragment extends BaseFragment {
         });
 
         addClicks(mBinding.tvPtg, unit -> {
+            Bundle params = new Bundle();
+            params.putString("image_name", "image_name");
+            params.putString("full_text", "full_text");
+            mFirebaseAnalytics.logEvent("share_image", params);
             PermissionUtil.externalStorage(new PermissionUtil.RequestPermission() {
                 @Override
                 public void onRequestPermissionSuccess() {

@@ -9,7 +9,7 @@ android {
     buildToolsVersion build_tools_version
 
     defaultConfig {
-        applicationId "com.xll.gif"
+        applicationId "com.yuanhao.gif"
         minSdkVersion min_sdk_version.toInteger()
         targetSdkVersion target_sdk_version.toInteger()
         versionCode version_code.toInteger()

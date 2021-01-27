@@ -3,16 +3,24 @@ package com.highlands.common.base;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.billingclient.api.AcknowledgePurchaseParams;
+import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.SkuDetails;
+import com.android.billingclient.api.SkuDetailsParams;
+import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.highlands.common.util.ToastUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import timber.log.Timber;
 
 /**
  * google 订阅
@@ -23,6 +31,8 @@ import androidx.annotation.Nullable;
  */
 public class BaseBillingActivity extends BaseActivity {
     protected BillingClient billingClient;
+    private SkuDetails skuDetails;
+    // Retrieve a value for "skuDetails" by calling querySkuDetailsAsync().
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,13 +44,14 @@ public class BaseBillingActivity extends BaseActivity {
         billingClient.startConnection(new BillingClientStateListener() {
             @Override
             public void onBillingSetupFinished(BillingResult billingResult) {
-                Log.i(TAG, "Google Play Connect Success ");
+                Log.i(TAG, "Google Play Connect Success " + billingResult.getResponseCode());
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     // The BillingClient is ready. You can query purchases here.
                     Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.SUBS);
 
                     List<Purchase> purchases = purchasesResult.getPurchasesList();
                     queryPurchase(purchases);
+                    querySku();
                 } else {
                     ToastUtil.showToast(BaseBillingActivity.this, billingResult.getDebugMessage());
                 }
@@ -56,6 +67,31 @@ public class BaseBillingActivity extends BaseActivity {
             }
         });
 
+
+        //
+        //        BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+        //                .setSkuDetails(skuDetails)
+        //                .build();
+        //        int responseCode = billingClient.launchBillingFlow(this, billingFlowParams).getResponseCode();
+
+    }
+
+    public void querySku() {
+        List<String> skuList = new ArrayList<>();
+        skuList.add("gif10086");
+        SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
+        params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS);
+        billingClient.querySkuDetailsAsync(params.build(),
+                new SkuDetailsResponseListener() {
+                    @Override
+                    public void onSkuDetailsResponse(BillingResult billingResult,
+                                                     List<SkuDetails> skuDetailsList) {
+                        // Process the result.
+                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                            Timber.tag(TAG).i(skuDetailsList.size() + " ---");
+                        }
+                    }
+                });
     }
 
     private void queryPurchase(List<Purchase> purchasesList) {
@@ -77,9 +113,38 @@ public class BaseBillingActivity extends BaseActivity {
     private PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
         @Override
         public void onPurchasesUpdated(BillingResult billingResult, List<Purchase> purchases) {
+            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
+                    && purchases != null) {
+                for (Purchase purchase : purchases) {
+                    handlePurchase(purchase);
+                }
+            } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
+                // Handle an error caused by a user cancelling the purchase flow.
+            } else {
+                // Handle any other error codes.
+            }
             // To be implemented in a later section.
-            queryPurchase(purchases);
+
         }
     };
+
+    private void handlePurchase(Purchase purchase) {
+
+        if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+            if (!purchase.isAcknowledged()) {
+                AcknowledgePurchaseParams acknowledgePurchaseParams =
+                        AcknowledgePurchaseParams.newBuilder()
+                                .setPurchaseToken(purchase.getPurchaseToken())
+                                .build();
+                billingClient.acknowledgePurchase(acknowledgePurchaseParams, new AcknowledgePurchaseResponseListener() {
+                    @Override
+                    public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+
+                    }
+                });
+            }
+        }
+    }
+
 
 }

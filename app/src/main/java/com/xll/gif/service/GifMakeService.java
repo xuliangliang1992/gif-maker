@@ -9,7 +9,7 @@ import android.provider.MediaStore;
 
 import com.highlands.common.dialog.DialogManager;
 import com.xll.gif.MainApplication;
-import com.xll.gif.activity.EditGifActivity;
+import com.xll.gif.activity.EditGif2Activity;
 import com.xll.gif.activity.MainActivity;
 import com.xll.gif.util.GifMaker;
 
@@ -134,7 +134,7 @@ public class GifMakeService extends IntentService {
         long now = System.currentTimeMillis();
         DialogManager.getInstance().dismissProgressDialog();
         Timber.tag(TAG).i("Done! " + (success ? " success " : " failed ") + " cost time=" + ((now - startAt) / 1000) + " seconds " + " \nsave at=" + toFile);
-        Intent intent = new Intent(this, EditGifActivity.class);
+        Intent intent = new Intent(this, EditGif2Activity.class);
         intent.putExtra("filePath", toFile);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
@@ -158,7 +158,7 @@ public class GifMakeService extends IntentService {
         long now = System.currentTimeMillis();
         DialogManager.getInstance().dismissProgressDialog();
         Timber.tag(TAG).i("Done! " + (success ? " success " : " failed ") + " cost time=" + ((now - startAt) / 1000) + " seconds " + " \nsave at=" + toFile);
-        Intent intent = new Intent(this, EditGifActivity.class);
+        Intent intent = new Intent(this, EditGif2Activity.class);
         intent.putExtra("filePath", toFile);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

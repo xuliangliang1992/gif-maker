@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "685629838264",
-    "project_id": "gif-maker-fa4ff",
-    "storage_bucket": "gif-maker-fa4ff.appspot.com"
+    "project_number": "51937660938",
+    "project_id": "my-gifmaker",
+    "storage_bucket": "my-gifmaker.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:685629838264:android:feeaa8d93a9c39bda5754d",
+        "mobilesdk_app_id": "1:51937660938:android:e2153444dce7d5030acff3",
         "android_client_info": {
-          "package_name": "com.xll.gif"
+          "package_name": "com.yuanhao.gif"
         }
       },
       "oauth_client": [
         {
-          "client_id": "685629838264-f22de4qei4bh56ti3j9aiup6tgticf4t.apps.googleusercontent.com",
+          "client_id": "51937660938-6pch8auelt0vdu5vgstnfu4bv56t8159.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA8tdzic1cgxxXNukdPNGyzVQM5cpGZMOY"
+          "current_key": "AIzaSyDkM8gYcGgYrFI7S4JtOv2ChLvDR10iOZQ"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "685629838264-f22de4qei4bh56ti3j9aiup6tgticf4t.apps.googleusercontent.com",
+              "client_id": "51937660938-6pch8auelt0vdu5vgstnfu4bv56t8159.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

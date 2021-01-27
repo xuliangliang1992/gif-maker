@@ -12,7 +12,7 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.view.View;
 
-import com.highlands.common.base.BaseRewardedAdActivity;
+import com.highlands.common.base.BaseActivity;
 import com.highlands.common.dialog.DialogClickListener;
 import com.highlands.common.dialog.DialogManager;
 import com.highlands.common.util.PermissionUtil;
@@ -35,7 +35,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
  * @date 2021/1/12
  * copyright(c) 浩鲸云计算科技股份有限公司
  */
-public class GalleryActivity extends BaseRewardedAdActivity {
+public class GalleryActivity extends BaseActivity {
 
     private GalleryActivityBinding mBinding;
 
@@ -126,7 +126,7 @@ public class GalleryActivity extends BaseRewardedAdActivity {
                             new DialogClickListener() {
                                 @Override
                                 public void leftClickListener() {
-                                    playAd();
+//                                    playAd();
                                 }
 
                                 @Override

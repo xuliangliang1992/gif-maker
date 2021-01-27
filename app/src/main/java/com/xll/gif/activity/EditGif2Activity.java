@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.highlands.common.BaseConstant;
-import com.highlands.common.base.BaseRewardedAdActivity;
+import com.highlands.common.base.BaseActivity;
 import com.highlands.common.dialog.DialogClickListener;
 import com.highlands.common.dialog.DialogManager;
 import com.highlands.common.util.DateUtil;
@@ -38,7 +38,7 @@ import pl.droidsonroids.gif.GifDrawable;
  * @date 2021/1/21
  * copyright(c) 浩鲸云计算科技股份有限公司
  */
-public class EditGif2Activity extends BaseRewardedAdActivity {
+public class EditGif2Activity extends BaseActivity {
 
     EditGif2ActivityBinding mBinding;
     GifAnimationDrawable mAnimationDrawable;
@@ -181,7 +181,7 @@ public class EditGif2Activity extends BaseRewardedAdActivity {
                             new DialogClickListener() {
                                 @Override
                                 public void leftClickListener() {
-                                    playAd();
+//                                    playAd();
                                 }
 
                                 @Override

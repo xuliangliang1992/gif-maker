@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.highlands.common.base.BaseActivity;
 import com.highlands.common.base.BaseView;
 import com.highlands.common.base.event.EventBusUtil;
@@ -45,6 +46,7 @@ public abstract class BaseFragment extends Fragment implements BaseView {
     protected BaseActivity mActivity;
 
     protected CompositeDisposable mCompositeDisposable;
+    protected FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void onAttach(@NotNull Context context) {
@@ -60,6 +62,7 @@ public abstract class BaseFragment extends Fragment implements BaseView {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(mActivity);
         if (isRegisteredEventBus()) {
             EventBusUtil.register(this);
         }

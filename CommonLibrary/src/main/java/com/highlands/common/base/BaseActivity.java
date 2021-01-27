@@ -2,6 +2,7 @@ package com.highlands.common.base;
 
 import android.os.Bundle;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.highlands.common.base.event.EventBusUtil;
 import com.highlands.common.base.event.EventMessage;
 import com.highlands.common.dialog.DialogManager;
@@ -28,6 +29,7 @@ public abstract class BaseActivity extends AppCompatActivity implements NetChang
 
     protected String TAG = this.getClass().getSimpleName();
 
+    protected FirebaseAnalytics mFirebaseAnalytics;
     protected CompositeDisposable mCompositeDisposable;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,7 +39,12 @@ public abstract class BaseActivity extends AppCompatActivity implements NetChang
         }
         mCompositeDisposable = new CompositeDisposable();
         NetWorkManager.getInstance().setNetChangeObserver(this);
-//        ImmersionBar.with(this)
+        // [START shared_app_measurement]
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        // [END shared_app_measurement]
+
+        //        ImmersionBar.with(this)
 //                .statusBarDarkFont(true, 0.2f)
 //                .navigationBarDarkIcon(true, 0.2f)
 //                .navigationBarColor(R.color.colorPrimary)
@@ -150,4 +157,13 @@ public abstract class BaseActivity extends AppCompatActivity implements NetChang
     protected void hideLoading() {
         DialogManager.getInstance().dismissProgressDialog();
     }
+
+//    protected void addCustomEvent(){
+//        // [START custom_event]
+//        Bundle params = new Bundle();
+//        params.putString("image_name", name);
+//        params.putString("full_text", text);
+//        mFirebaseAnalytics.logEvent("share_image", params);
+//        // [END custom_event]
+//    }
 }
