@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.highlands.common.base.BaseInterstitialAdActivity;
+import com.highlands.common.base.BaseActivity;
 import com.highlands.common.base.adapter.MainPageAdapter;
 import com.highlands.common.base.fragment.BaseFragment;
 import com.xll.gif.R;
@@ -19,7 +19,7 @@ import java.util.List;
 
 import androidx.databinding.DataBindingUtil;
 
-public class MainActivity extends BaseInterstitialAdActivity {
+public class MainActivity extends BaseActivity {
 
     private ActivityMainBinding binding;
 

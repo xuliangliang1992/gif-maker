@@ -47,7 +47,15 @@ public class GlideUtil {
     }
 
     public static void loadImage2(Context context, String path, ImageView imageView) {
-        GlideApp.with(context).load(path).placeholder(R.drawable.loading_gif).into(imageView);
+//        //设置图片圆角角度
+//        RoundedCorners roundedCorners = new RoundedCorners(SystemUtil.dip2px(context, 10));
+//        //通过RequestOptions扩展功能,override:采样率,因为ImageView就这么大,可以压缩图片,降低内存消耗
+//        RequestOptions options = RequestOptions.bitmapTransform(roundedCorners)
+//                .diskCacheStrategy(DiskCacheStrategy.ALL);
+        GlideApp.with(context)
+                .load(path)
+                .placeholder(R.drawable.loading_gif)
+                .into(imageView);
     }
 
     public static void loadImage(Context context, String url, ImageView imageView, int roundingRadius) {
@@ -55,7 +63,7 @@ public class GlideUtil {
             return;
         }
         //设置图片圆角角度
-        RoundedCorners roundedCorners = new RoundedCorners(SystemUtil.dip2px(context,roundingRadius));
+        RoundedCorners roundedCorners = new RoundedCorners(SystemUtil.dip2px(context, roundingRadius));
         //通过RequestOptions扩展功能,override:采样率,因为ImageView就这么大,可以压缩图片,降低内存消耗
         RequestOptions options = RequestOptions.bitmapTransform(roundedCorners)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);
@@ -65,7 +73,7 @@ public class GlideUtil {
 
     public static void loadImage1(Context context, @RawRes Integer id, ImageView imageView) {
         //设置图片圆角角度
-        RoundedCorners roundedCorners = new RoundedCorners(SystemUtil.dip2px(context,5));
+        RoundedCorners roundedCorners = new RoundedCorners(SystemUtil.dip2px(context, 5));
         //通过RequestOptions扩展功能,override:采样率,因为ImageView就这么大,可以压缩图片,降低内存消耗
         RequestOptions options = RequestOptions.bitmapTransform(roundedCorners)
                 .diskCacheStrategy(DiskCacheStrategy.ALL);

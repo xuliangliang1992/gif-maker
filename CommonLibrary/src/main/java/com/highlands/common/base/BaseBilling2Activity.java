@@ -1,6 +1,7 @@
 package com.highlands.common.base;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.android.billingclient.api.AcknowledgePurchaseParams;
 import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
@@ -40,7 +41,7 @@ public class BaseBilling2Activity extends BaseActivity {
     }
 
     public void init() {
-        mSku = "gif111";
+        mSku = "gifmaker";
         mBillingClient = BillingClient.newBuilder(this)
                 .setListener(mPurchasesUpdatedListener)
                 .enablePendingPurchases()
@@ -60,6 +61,7 @@ public class BaseBilling2Activity extends BaseActivity {
                     if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                         Timber.tag(TAG).i(TAG, "onBillingSetupFinished==ok");
                         canUseBillbing = true;
+                        queryPurchase();
                     } else {
                         Timber.tag(TAG).w(TAG, "onBillingSetupFinished--error==" + billingResult.getDebugMessage() + "====" + billingResult.getResponseCode());
                     }
@@ -80,9 +82,27 @@ public class BaseBilling2Activity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (canUseBillbing) {
-            mBillingClient.queryPurchases(BillingClient.SkuType.SUBS);
+            queryPurchase();
         } else {
             connectBilling();
+        }
+    }
+
+    private void queryPurchase() {
+        Purchase.PurchasesResult purchasesResult =  mBillingClient.queryPurchases(BillingClient.SkuType.SUBS);
+        List<Purchase> purchasesList = purchasesResult.getPurchasesList();
+        if (purchasesList == null || purchasesList.size() == 0) {
+            ToastUtil.showToast(BaseBilling2Activity.this, "no paid info");
+            return;
+        }
+        for (int i = 0; i < purchasesList.size(); i++) {
+            Purchase purchase = purchasesList.get(i);
+            if (mSku.equals(purchase.getSku()) && purchase.isAutoRenewing()) {
+                // 已订阅
+                Log.i(TAG, "已订阅 ");
+                BaseApplication.setAuth(true);
+                consumeSuccess();
+            }
         }
     }
 
@@ -98,7 +118,7 @@ public class BaseBilling2Activity extends BaseActivity {
             skuList.add(mSku);//商品的id
             skuList.add("gas");// 这个参数不能为空，值随便传
             SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
-            params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
+            params.setSkusList(skuList).setType(BillingClient.SkuType.SUBS);
             //querySkuDetailsAsync 查询方法，list集合中传入商品id，谷歌后台-》应用内商品-》具体商品
             mBillingClient.querySkuDetailsAsync(params.build(),
                     new SkuDetailsResponseListener() {
@@ -107,6 +127,10 @@ public class BaseBilling2Activity extends BaseActivity {
                                                          List<SkuDetails> skuDetailsList) {
                             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK
                                     && skuDetailsList != null) {
+                                if(skuDetailsList.size()==0){
+                                    ToastUtil.showToast(BaseBilling2Activity.this,"无可订阅商品");
+                                    return;
+                                }
                                 for (SkuDetails skuDetails : skuDetailsList) {
                                     //  skuDetails 对象信息
                                     //                        {
@@ -128,7 +152,8 @@ public class BaseBilling2Activity extends BaseActivity {
                                                 BillingFlowParams.newBuilder()
                                                         .setSkuDetails(skuDetails)
                                                         .build();
-                                        mBillingClient.launchBillingFlow(BaseBilling2Activity.this, purchaseParams);
+                                        BillingResult responseCode = mBillingClient.launchBillingFlow(BaseBilling2Activity.this, purchaseParams);
+                                        Timber.tag(TAG).i(TAG, responseCode.toString());
                                     }
                                 }
                             } else {

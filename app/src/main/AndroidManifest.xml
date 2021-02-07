@@ -25,6 +25,8 @@
 
         <activity
             android:name=".activity.MainActivity"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.CameraActivity"
@@ -97,5 +99,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <!-- 开启闪光灯权限 -->
     <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR" />
 
 </manifest>

@@ -9,12 +9,13 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.highlands.common.BaseConstant;
-import com.highlands.common.base.BaseActivity;
+import com.highlands.common.base.BaseApplication;
+import com.highlands.common.base.BaseInterstitialAdActivity;
 import com.highlands.common.dialog.DialogClickListener;
 import com.highlands.common.dialog.DialogManager;
 import com.highlands.common.util.DateUtil;
 import com.highlands.common.util.FileUtil;
-import com.highlands.common.util.ToastUtil;
+import com.highlands.common.util.ShapeUtil;
 import com.warkiz.tickseekbar.OnSeekChangeListener;
 import com.warkiz.tickseekbar.SeekParams;
 import com.warkiz.tickseekbar.TickSeekBar;
@@ -38,7 +39,7 @@ import pl.droidsonroids.gif.GifDrawable;
  * @date 2021/1/21
  * copyright(c) 浩鲸云计算科技股份有限公司
  */
-public class EditGif2Activity extends BaseActivity {
+public class EditGif2Activity extends BaseInterstitialAdActivity {
 
     EditGif2ActivityBinding mBinding;
     GifAnimationDrawable mAnimationDrawable;
@@ -54,6 +55,9 @@ public class EditGif2Activity extends BaseActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.edit_gif2_activity);
 
+        ShapeUtil.setShape(mBinding.tvAddText,this,5,R.color.blue_3974FF);
+        ShapeUtil.setShape(mBinding.tvAddIcon,this,5,R.color.blue_3974FF);
+        ShapeUtil.setShape(mBinding.tvRevert,this,5,R.color.blue_3974FF);
 
         initData();
         initListener();
@@ -84,17 +88,20 @@ public class EditGif2Activity extends BaseActivity {
         mAnimationDrawable.setOneShot(false);
         mBinding.iv.setImageDrawable(mAnimationDrawable);
         mBinding.seekBarGif.setMax(list.size() + 1);
-    }
-
-    @Override
-    protected void initListener() {
-        super.initListener();
         mAnimationDrawable.setPlayListener(new GifAnimationDrawable.onPlayListener() {
             @Override
             public void onPlay(int currPosition) {
                 mBinding.seekBarGif.setProgress(currPosition + 1);
             }
         });
+        mAnimationDrawable.start();
+        mBinding.ivStart.setImageResource(R.mipmap.pause);
+    }
+
+    @Override
+    protected void initListener() {
+        super.initListener();
+
         mBinding.seekBarGif.setOnSeekChangeListener(new OnSeekChangeListener() {
             @Override
             public void onSeeking(SeekParams seekParams) {
@@ -163,6 +170,17 @@ public class EditGif2Activity extends BaseActivity {
             }
         });
 
+        mBinding.tvRevert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Bitmap> newList = new ArrayList<Bitmap>();
+                for (int i = list.size()-1; i >=0; i--) {
+                    newList.add(list.get(i));
+                }
+                list = newList;
+                setBitmapsToAnim();
+            }
+        });
         mBinding.llBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -181,12 +199,12 @@ public class EditGif2Activity extends BaseActivity {
                             new DialogClickListener() {
                                 @Override
                                 public void leftClickListener() {
-//                                    playAd();
+                                    playAd();
                                 }
 
                                 @Override
                                 public void rightClickListener() {
-                                    ToastUtil.showToast(EditGif2Activity.this, "try for free");
+                                    startActivity(new Intent(EditGif2Activity.this,LaunchActivity.class).putExtra("fromEdit",true));
                                     //                                    if (MainApplication.isAuth() || MainApplication.isAdAuth()) {
                                     //                                        editGif();
                                     //                                    } else {
@@ -205,6 +223,7 @@ public class EditGif2Activity extends BaseActivity {
             mBinding.ivStart.setImageResource(R.mipmap.play);
         }
         tryMaker();
+        BaseApplication.setAdAuth(false);
     }
 
     @Override

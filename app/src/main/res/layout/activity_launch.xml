@@ -3,117 +3,138 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
         android:gravity="center_horizontal"
-        android:layout_height="match_parent">
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_close"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:src="@drawable/back" />
+        </LinearLayout>
 
         <TextView
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:text="Profesional GIF Maker"
+            android:textColor="@color/black_212222"
             android:textSize="24dp"
-            android:textStyle="bold"
-            android:layout_marginTop="50dp"
-            android:textColor="@color/black_212222"/>
+            android:textStyle="bold" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:text="Create your own funny Gifs like a Pro"
-            android:textSize="16dp"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/black_212222"/>
-
-<LinearLayout
-    android:layout_width="200dp"
-    android:gravity="center_vertical"
-    android:layout_marginTop="10dp"
-    android:layout_height="30dp">
-    <ImageView
-        android:layout_width="20dp"
-        android:src="@mipmap/choose"
-        android:scaleType="fitXY"
-        android:layout_height="20dp"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:text="Unlimited GIF maker"
-        android:textSize="13dp"
-        android:layout_marginStart="13dp"
-        android:textColor="#333333"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+            android:textColor="@color/black_212222"
+            android:textSize="16dp" />
 
         <LinearLayout
             android:layout_width="200dp"
-            android:gravity="center_vertical"
+            android:layout_height="30dp"
             android:layout_marginTop="10dp"
-            android:layout_height="30dp">
+            android:gravity="center_vertical">
+
             <ImageView
                 android:layout_width="20dp"
-                android:src="@mipmap/choose"
+                android:layout_height="20dp"
                 android:scaleType="fitXY"
-                android:layout_height="20dp"/>
+                android:src="@mipmap/choose" />
+
             <TextView
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="13dp"
+                android:text="Unlimited GIF maker"
+                android:textColor="#333333"
+                android:textSize="13dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:scaleType="fitXY"
+                android:src="@mipmap/choose" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="13dp"
                 android:text="Advanced GIF editor"
-                android:textSize="13dp"
-                android:layout_marginStart="13dp"
                 android:textColor="#333333"
-                android:layout_height="wrap_content"/>
+                android:textSize="13dp" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="200dp"
-            android:gravity="center_vertical"
+            android:layout_height="30dp"
             android:layout_marginTop="10dp"
-            android:layout_height="30dp">
+            android:gravity="center_vertical">
+
             <ImageView
                 android:layout_width="20dp"
-                android:src="@mipmap/choose"
+                android:layout_height="20dp"
                 android:scaleType="fitXY"
-                android:layout_height="20dp"/>
+                android:src="@mipmap/choose" />
+
             <TextView
                 android:layout_width="wrap_content"
-                android:text="Remove ads"
-                android:textSize="13dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
+                android:text="Remove ads"
                 android:textColor="#333333"
-                android:layout_height="wrap_content"/>
+                android:textSize="13dp" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/tv_try"
-            android:layout_marginTop="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/base_shape"
             android:gravity="center"
             android:paddingBottom="15dp"
             android:paddingTop="15dp"
+            android:text="CONTINUE"
             android:textColor="@color/white"
-            android:textSize="20dp"
-            android:text="$199.99/Year" />
+            android:textSize="20dp" />
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Subscription info:"
-            android:textSize="16dp"
-            android:textStyle="bold"
             android:layout_marginTop="10dp"
-            android:textColor="@color/black_212222"/>
+            android:text="Subscription info:"
+            android:textColor="@color/black_212222"
+            android:textSize="16dp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
+            android:layout_marginStart="15dp"
             android:gravity="center"
+            android:padding="5dp"
             android:text="@string/subscripitions_info"
-            android:textSize="16dp"
-            android:textColor="@color/black_212222"/>
+            android:textColor="@color/black_212222"
+            android:textSize="16dp" />
 
     </LinearLayout>
 

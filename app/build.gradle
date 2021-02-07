@@ -18,13 +18,24 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        config {
+            storeFile file(STORE_FILE)
+            storePassword STORE_PASSWORD
+            keyAlias KEY_ALIAS
+            keyPassword KEY_PASSWORD
+        }
+    }
+
     buildTypes {
         debug {
+            signingConfig signingConfigs.config
             buildConfigField "boolean", "LOG_DEBUG", LOG_DEBUG
             minifyEnabled MINIFY_ENABLED.toBoolean()
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), PROGUARD_RULES_FILE
         }
         release {
+            signingConfig signingConfigs.config
             buildConfigField "boolean", "LOG_DEBUG", LOG_DEBUG
             minifyEnabled MINIFY_ENABLED.toBoolean()
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), PROGUARD_RULES_FILE

@@ -167,11 +167,11 @@ public abstract class BaseFragment extends Fragment implements BaseView {
     }
 
     public void showToast() {
-        ToastUtil.showToast(getActivity(), "已经到底了");
+        ToastUtil.showToast(mActivity, "已经到底了");
     }
 
     public void showToast(String msg) {
-        ToastUtil.showToast(getActivity(), msg);
+        ToastUtil.showToast(mActivity, msg);
     }
 
     /**

@@ -2,17 +2,22 @@ package com.xll.gif.fragment;
 
 import android.Manifest;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.highlands.common.base.BaseApplication;
 import com.highlands.common.base.fragment.BaseFragment;
 import com.highlands.common.util.PermissionUtil;
+import com.highlands.common.util.ShapeUtil;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.xll.gif.R;
 import com.xll.gif.activity.CameraActivity;
 import com.xll.gif.activity.GalleryActivity;
+import com.xll.gif.activity.LaunchActivity;
 import com.xll.gif.activity.VideoListActivity;
 import com.xll.gif.databinding.CreateFragmentBinding;
 
@@ -41,14 +46,35 @@ public class GifCreateFragment extends BaseFragment {
     @Override
     public void initView(View view) {
         mBinding = DataBindingUtil.bind(view);
+        ShapeUtil.setShape(mBinding.tvVip, mActivity, 25, R.color.blue_3974FF);
+
+        MobileAds.initialize(mActivity, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mBinding.adView.loadAd(adRequest);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mBinding.adView.setVisibility(BaseApplication.isAuth() ? View.GONE : View.VISIBLE);
+        mBinding.tvVip.setVisibility(BaseApplication.isAuth() ? View.GONE : View.VISIBLE);
     }
 
     @Override
     public void initListener() {
+        addClicks(mBinding.tvVip, unit -> {
+            if (BaseApplication.isAuth()) {
+                showToast("You are the vip");
+                return;
+            }
+            startActivity(new Intent(mActivity, LaunchActivity.class));
+        });
         addClicks(mBinding.tvCtg, unit -> {
-            Bundle bundle = new Bundle();
-            bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "video");
-            mFirebaseAnalytics.logEvent("try_for_free", bundle);
             PermissionUtil.requestPermission(new PermissionUtil.RequestPermission() {
                                                  @Override
                                                  public void onRequestPermissionSuccess() {
@@ -70,12 +96,7 @@ public class GifCreateFragment extends BaseFragment {
                     Manifest.permission.RECORD_AUDIO,
                     Manifest.permission.CAMERA);
         });
-
         addClicks(mBinding.tvPtg, unit -> {
-            Bundle params = new Bundle();
-            params.putString("image_name", "image_name");
-            params.putString("full_text", "full_text");
-            mFirebaseAnalytics.logEvent("share_image", params);
             PermissionUtil.externalStorage(new PermissionUtil.RequestPermission() {
                 @Override
                 public void onRequestPermissionSuccess() {
@@ -93,7 +114,6 @@ public class GifCreateFragment extends BaseFragment {
                 }
             }, new RxPermissions(this));
         });
-
         addClicks(mBinding.tvVtg, unit -> {
             PermissionUtil.launchCamera(new PermissionUtil.RequestPermission() {
                 @Override

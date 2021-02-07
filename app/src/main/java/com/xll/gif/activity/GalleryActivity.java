@@ -112,7 +112,7 @@ public class GalleryActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 ArrayList<Bitmap> bitmaps = mAdapter.getSelectedPhoto();
-                if (mAdapter.getSelectedPhoto().size() < 3 || bitmaps.size() > 200) {
+                if (mAdapter.getSelectedPhoto().size() < 2 || bitmaps.size() > 200) {
                     ToastUtil.showToast(GalleryActivity.this, "selected photo in 2 - 200!");
                     return;
                 }

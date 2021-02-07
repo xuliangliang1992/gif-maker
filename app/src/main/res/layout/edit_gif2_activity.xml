@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
+        android:background="#cccccc"
         android:layout_height="match_parent">
 
         <ImageView
@@ -46,8 +48,7 @@
             android:layout_height="wrap_content"
             android:text="speed"
             app:layout_constraintStart_toStartOf="parent"
-            android:padding="10dp"
-            app:layout_constraintTop_toTopOf="@id/seekBar"
+            android:gravity="bottom"
             app:layout_constraintBottom_toBottomOf="@id/seekBar"
             android:layout_marginStart="30dp"
             />
@@ -55,11 +56,11 @@
         <com.warkiz.tickseekbar.TickSeekBar
             app:layout_constraintStart_toEndOf="@+id/iv_start"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/iv_start"
             app:layout_constraintBottom_toBottomOf="@id/iv_start"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:id="@+id/seekBar_gif"
+            android:layout_marginBottom="4dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:tsb_min="1"
@@ -78,24 +79,48 @@
 
         <TextView
             android:id="@+id/tv_add_text"
+            android:minWidth="80dp"
             app:layout_constraintTop_toBottomOf="@+id/seekBar"
             android:layout_width="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:padding="10dp"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            android:background="@drawable/base_shape"
             android:layout_marginTop="10dp"
-            android:text="add text"/>
+            android:text="Add Text"/>
+
         <TextView
             android:id="@+id/tv_add_icon"
             app:layout_constraintTop_toBottomOf="@+id/seekBar"
             android:layout_width="wrap_content"
             app:layout_constraintStart_toEndOf="@id/tv_add_text"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="30dp"
             android:padding="10dp"
+            android:minWidth="80dp"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            android:background="@drawable/base_shape"
             android:layout_marginTop="10dp"
-            android:text="add icon"/>
+            android:text="Add Icon"/>
+
+        <TextView
+            android:id="@+id/tv_revert"
+            app:layout_constraintTop_toBottomOf="@+id/seekBar"
+            android:layout_width="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/tv_add_icon"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:padding="10dp"
+            android:minWidth="80dp"
+            android:background="@drawable/base_shape"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            android:text="Revert"/>
 
         <LinearLayout
             android:id="@+id/ll_back"
@@ -111,20 +136,26 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/back" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="Back"
-                android:textColor="#333"
-                android:textSize="18dp" />
         </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:text="Edit"
+            android:textColor="#333"
+            android:textSize="18dp"
+            app:layout_constraintBottom_toBottomOf="@id/ll_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ll_back" />
+
         <TextView
             android:id="@+id/tv_save"
             android:layout_width="50dp"
             android:layout_height="0dp"
             android:gravity="center"
             android:text="Save"
+            android:layout_marginEnd="20dp"
             android:textColor="#333"
             android:textSize="18dp"
             app:layout_constraintBottom_toBottomOf="@id/ll_back"
@@ -134,10 +165,9 @@
         <ImageView
             android:id="@+id/iv"
             android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginStart="30dp"
-            android:scaleType="fitXY"
+            android:layout_height="300dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_back"

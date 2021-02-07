@@ -23,7 +23,7 @@ import timber.log.Timber;
  * @date 2021/1/22
  * copyright(c) 浩鲸云计算科技股份有限公司
  */
-public class BaseInterstitialAdActivity extends BaseBillingActivity {
+public class BaseInterstitialAdActivity extends BaseActivity {
     protected InterstitialAd mInterstitialAd;
 
     @Override
@@ -47,7 +47,7 @@ public class BaseInterstitialAdActivity extends BaseBillingActivity {
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
                 Timber.tag(TAG).i("onAdLoaded");
-                startTimer();
+//                startTimer();
             }
 
             @Override
@@ -67,6 +67,7 @@ public class BaseInterstitialAdActivity extends BaseBillingActivity {
                 // Code to be executed when the interstitial ad is closed.
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());
                 Timber.tag(TAG).i("onAdClosed");
+                BaseApplication.setAdAuth(true);
             }
 
             @Override
@@ -83,7 +84,7 @@ public class BaseInterstitialAdActivity extends BaseBillingActivity {
     }
 
     private void startTimer() {
-        Observable.interval(5, TimeUnit.MINUTES)
+        Observable.interval(3, TimeUnit.MINUTES)
                 .subscribeOn(SchedulerProvider.getInstance().io())
                 .observeOn(SchedulerProvider.getInstance().ui())
                 .subscribe(new Observer<Long>() {

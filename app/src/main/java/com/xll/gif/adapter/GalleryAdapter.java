@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.highlands.common.base.adapter.BaseSingleBindingAdapter;
@@ -11,7 +12,6 @@ import com.highlands.common.util.glide.GlideUtil;
 import com.xll.gif.R;
 import com.xll.gif.databinding.ItemGalleryBinding;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +20,6 @@ import java.util.ArrayList;
  * copyright(c) 浩鲸云计算科技股份有限公司
  */
 public class GalleryAdapter extends BaseSingleBindingAdapter<String, ItemGalleryBinding> {
-    File mImgDir;
     onGalleryClickListener mGalleryClickListener;
     SparseBooleanArray mBooleanArray;
 
@@ -37,9 +36,9 @@ public class GalleryAdapter extends BaseSingleBindingAdapter<String, ItemGallery
 
     public ArrayList<Bitmap> getSelectedPhoto() {
         ArrayList<Bitmap> list = new ArrayList<>();
-        for (int i = 0; i < mBooleanArray.size(); i++) {
+        for (int i = 0; i < mItems.size(); i++) {
             if (mBooleanArray.get(i)) {
-                Bitmap bitmap = BitmapFactory.decodeFile(mImgDir.getAbsolutePath() + "/" + mItems.get(i));
+                Bitmap bitmap = BitmapFactory.decodeFile(mItems.get(i));
                 list.add(bitmap);
             }
         }
@@ -80,6 +79,13 @@ public class GalleryAdapter extends BaseSingleBindingAdapter<String, ItemGallery
                     mBooleanArray.put(position, !binding.cb.isChecked());
                     notifyItemChanged(position);
                     //                        mGalleryClickListener.onImageSelect();
+                }
+            });
+            binding.cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    mBooleanArray.put(position, b);
+                    notifyItemChanged(position);
                 }
             });
             //            }

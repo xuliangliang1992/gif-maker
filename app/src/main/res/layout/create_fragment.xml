@@ -7,38 +7,38 @@
         android:paddingEnd="15dp"
         android:paddingStart="15dp">
 
-         <TextView
+        <TextView
             android:id="@+id/tv_ptg"
             android:layout_width="0dp"
             android:layout_height="120dp"
             android:layout_marginTop="10dp"
             android:background="@mipmap/photo_bg"
             android:padding="10dp"
+            android:paddingStart="30dp"
+            android:paddingTop="20dp"
             android:text="Photo to Gif"
             android:textColor="@color/white"
             android:textSize="16dp"
             android:textStyle="bold"
-             android:paddingTop="20dp"
-             android:paddingStart="30dp"
             app:layout_constraintEnd_toStartOf="@+id/tv_vtg"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_title" />
+            app:layout_constraintTop_toBottomOf="@id/tv_vip" />
 
         <TextView
             android:id="@+id/tv_ctg"
             android:layout_width="0dp"
             android:layout_height="140dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginStart="18dp"
             android:background="@mipmap/camera_bg"
             android:padding="10dp"
+            android:paddingStart="24dp"
+            android:paddingTop="20dp"
             android:text="Camera to Gif"
             android:textColor="@color/white"
             android:textSize="16dp"
-            android:paddingStart="24dp"
-            android:paddingTop="20dp"
             android:textStyle="bold"
-            android:layout_marginStart="18dp"
-            android:layout_marginEnd="18dp"
             app:layout_constraintEnd_toEndOf="@id/tv_vtg"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="@id/tv_ptg"
@@ -47,19 +47,19 @@
         <TextView
             android:id="@+id/tv_vtg"
             android:layout_width="0dp"
-            android:paddingTop="20dp"
-            android:paddingStart="30dp"
             android:layout_height="0dp"
             android:background="@mipmap/video_bg"
+            android:paddingStart="30dp"
+            android:paddingTop="20dp"
             android:text="Video to Gif"
             android:textColor="@color/white"
             android:textSize="16dp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/tv_ptg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/tv_ptg"
-            app:layout_constraintTop_toTopOf="@id/tv_ptg"
-            app:layout_constraintBottom_toBottomOf="@id/tv_ptg"/>
+            app:layout_constraintTop_toTopOf="@id/tv_ptg" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -74,12 +74,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <TextView
             android:layout_width="190dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_marginTop="25dp"
+            android:gravity="center"
             android:text="You can generate gif from pictures or videos"
             android:textColor="#999999"
             android:textSize="16dp"
@@ -87,6 +86,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_ctg" />
 
+        <TextView
+            android:id="@+id/tv_vip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/base_shape"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="VIP"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_title" />
+
+        <com.google.android.gms.ads.AdView android:id="@+id/adView"
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="80dp"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-3940256099942544/6300978111"
+            ads:layout_constraintEnd_toEndOf="parent"
+            ads:layout_constraintStart_toStartOf="parent"
+            ads:layout_constraintTop_toBottomOf="@+id/tv_ctg"></com.google.android.gms.ads.AdView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <data />
