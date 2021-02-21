@@ -25,6 +25,7 @@ public class AuthDialog extends BaseDialog {
     public AuthDialog(Context context, DialogClickListener dialogClickListener) {
         super(context);
         this.mDialogClickListener = dialogClickListener;
+        setCancel(false);
     }
 
     @Override
@@ -53,6 +54,7 @@ public class AuthDialog extends BaseDialog {
                 @Override
                 public void onClick(View view) {
                     mDialogClickListener.leftClickListener();
+                    dismiss();
                 }
             });
         }
