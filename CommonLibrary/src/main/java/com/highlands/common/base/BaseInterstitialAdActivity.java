@@ -8,6 +8,7 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.LoadAdError;
 import com.highlands.common.BaseConstant;
 import com.highlands.common.schedulers.SchedulerProvider;
+import com.highlands.common.util.ToastUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -47,7 +48,7 @@ public class BaseInterstitialAdActivity extends BaseActivity {
             public void onAdLoaded() {
                 // Code to be executed when an ad finishes loading.
                 Timber.tag(TAG).i("onAdLoaded");
-//                startTimer();
+                //                startTimer();
             }
 
             @Override
@@ -111,14 +112,14 @@ public class BaseInterstitialAdActivity extends BaseActivity {
     }
 
     public void playAd() {
-        if(BaseApplication.isAuth()){
+        if (BaseApplication.isAuth()) {
             return;
         }
-        if ( mInterstitialAd != null && mInterstitialAd.isLoaded()) {
+        if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
         } else {
             Timber.tag(TAG).d("The interstitial wasn't loaded yet.");
-            //            ToastUtil.showToast(this,"The interstitial ad wasn't loaded yet,please try again in a few seconds!");
+            ToastUtil.showToast(this, "The interstitial ad wasn't loaded yet,please try again in a few seconds!");
         }
     }
 

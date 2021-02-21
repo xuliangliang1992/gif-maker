@@ -21,7 +21,7 @@ public class BaseConstant {
 
     public static final String SHARED_PREFERENCE_FILE_NAME = "tianFuFinance";
     public static final String DATA_BASE_NAME = "tianFuFinance.db";
-    public static final String AD_MOB_KEY = "ca-app-pub-3940256099942544/5224354917";
+    public static final String AD_MOB_KEY = "ca-app-pub-7600333135064918/5709401721";
 
 
     public static final String SUCCESS = "success";

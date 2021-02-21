@@ -92,7 +92,7 @@ public class BaseBilling2Activity extends BaseActivity {
         Purchase.PurchasesResult purchasesResult =  mBillingClient.queryPurchases(BillingClient.SkuType.SUBS);
         List<Purchase> purchasesList = purchasesResult.getPurchasesList();
         if (purchasesList == null || purchasesList.size() == 0) {
-            ToastUtil.showToast(BaseBilling2Activity.this, "no paid info");
+//            ToastUtil.showToast(BaseBilling2Activity.this, "no paid info");
             return;
         }
         for (int i = 0; i < purchasesList.size(); i++) {

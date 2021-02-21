@@ -123,13 +123,16 @@
             android:textColor="@color/black_212222"/>
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="100dp"
             android:padding="5dp"
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
-            android:gravity="center"
-            android:text="To unlock all special features of this Gif maker,you need to subscribe to our subscriptions plan.You have 3 days for free."
+            android:gravity="start"
+            android:text="@string/subscripitions_info"
             android:textSize="16dp"
+            android:scrollbars="vertical"
+            android:scrollbarFadeDuration="200"
+            android:scrollbarStyle="outsideOverlay"
             android:textColor="@color/black_212222"/>
     </LinearLayout>
 
