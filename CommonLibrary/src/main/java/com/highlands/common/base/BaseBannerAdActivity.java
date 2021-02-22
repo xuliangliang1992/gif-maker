@@ -10,7 +10,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.highlands.common.BaseConstant;
 
 import androidx.annotation.Nullable;
 
@@ -44,7 +43,7 @@ public class BaseBannerAdActivity extends BaseActivity {
 
         // Step 1 - Create an AdView and set the ad unit ID on it.
         adView = new AdView(this);
-        adView.setAdUnitId(BaseConstant.AD_MOB_KEY);
+//        adView.setAdUnitId(BaseConstant.AD_MOB_KEY);
 
         loadBanner();
     }

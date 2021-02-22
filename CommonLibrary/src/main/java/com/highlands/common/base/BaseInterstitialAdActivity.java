@@ -42,7 +42,8 @@ public class BaseInterstitialAdActivity extends BaseActivity {
     private void initInterstitialAd() {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(BaseConstant.AD_MOB_KEY);
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+        mInterstitialAd.loadAd(new AdRequest.Builder().addTestDevice(AdRequest.DEVICE_ID_EMULATOR).build());
+        Timber.tag(TAG).i("initInterstitialAd");
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
